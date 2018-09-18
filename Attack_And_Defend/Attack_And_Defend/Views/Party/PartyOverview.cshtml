@@ -1,0 +1,19 @@
+﻿@model List<Party>
+@{
+    var model = Model;
+}
+
+<div class="informationBlock hasNavBar">
+    @foreach (Party party in model)
+    {
+        <h1>@party.Name</h1>
+        foreach (Character character in party.Characters)
+        {
+        <div> Name: @character.Name</div>
+            <div>Health: @character.Health
+            Attack: @character.Attack
+            Magic Defense: @character.MagicDefense</div>
+            <br/>
+        }
+    }
+</div>

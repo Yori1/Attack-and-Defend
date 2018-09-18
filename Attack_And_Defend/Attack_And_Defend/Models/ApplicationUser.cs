@@ -8,9 +8,11 @@ namespace Attack_And_Defend.Models
 {
     public class ApplicationUser: IdentityUser
     {
-        public ICollection<Party> Parties { get; private set; }
+        public ICollection<Party> Parties { get; private set; } = new List<Party>();
 
-        public ApplicationUser()
+        public ApplicationUser() { }
+
+        public ApplicationUser(string username) : base(username)
         {
             Parties = new List<Party>();
         }

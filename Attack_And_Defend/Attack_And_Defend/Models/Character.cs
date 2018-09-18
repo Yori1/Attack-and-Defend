@@ -15,7 +15,26 @@ namespace Attack_And_Defend.Models
         public int MagicDefense { get; private set; }
         public int Health { get; private set; }
         public bool Fainted { get; private set; }
-        public bool AttaksPhysical { get; private set; }
+        public bool AttacksPhysical { get; private set; }
+
+        public Character(string name, int attack, int magicDefense, int health, bool fainted, bool attacksPhysical)
+        {
+            Name = name;
+            Attack = attack;
+            MagicDefense = magicDefense;
+            Health = health;
+            Fainted = fainted;
+            AttacksPhysical = attacksPhysical;
+        }
+
+        public Character(string name, int attack, int magicDefense, int health, bool attacksPhysical)
+        {
+            Name = name;
+            Attack = attack;
+            MagicDefense = magicDefense;
+            Health = health;
+            AttacksPhysical = attacksPhysical;
+        }
 
         public void AttackTarget(Character target)
         {

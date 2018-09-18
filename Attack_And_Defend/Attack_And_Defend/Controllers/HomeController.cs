@@ -19,44 +19,44 @@ namespace Attack_And_Defend.Controllers
         public HomeController(UserManager<ApplicationUser> userManager, 
             SignInManager<ApplicationUser> signInManager, ApplicationDbContext context)
         {
-            userHandler = new UserHandler(userManager, context, signInManager, User);
+             userHandler = new UserHandler(userManager, context, signInManager);
         }
 
         public IActionResult Index()
         {
-            if (userHandler.GetSignedInUser() == null)
+            if (userHandler.GetSignedInUser(User) == null)
                 return View("Views/Home/NotLoggedIn.cshtml");
             else
-                return View();
+                return RedirectToAction("PartyOverview", "Party");
         }
 
         [HttpPost]
-        public IActionResult Index(string Username, string Password)
+        public IActionResult Register(string UsernameRegister, string PasswordRegister, string PasswordConfirm)
         {
-            if (userHandler.TryCreateUser(Username, Password))
-                return View();
- 
-            return View();
+            if (PasswordRegister != PasswordConfirm)
+                return Index();
+            userHandler.TryCreateUser(UsernameRegister, PasswordRegister);
+            return Index();
         }
 
-        public IActionResult About()
+        [HttpPost]
+        public async Task<IActionResult> Login(string UsernameLogin, string PasswordLogin)
         {
-            ViewData["Message"] = "Your application description page.";
-
-            return View();
+            bool loggedIn = await userHandler.TryLogInUser(UsernameLogin, PasswordLogin, User);
+            if(loggedIn)
+                return RedirectToAction("PartyOverview", "Party");
+            else
+                return View("Views/Home/NotLoggedIn.cshtml");
         }
 
-        public IActionResult Contact()
+        public IActionResult LogOut()
         {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
+            bool logoutSuccesful = userHandler.TryLogOut();
+            if (logoutSuccesful)
+                return View("Views/Home/NotLoggedIn.cshtml");
+            return Index();
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
