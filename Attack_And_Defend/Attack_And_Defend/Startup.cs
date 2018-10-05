@@ -17,9 +17,20 @@ namespace Attack_And_Defend
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        string connectionKeyStringKey;
+
+        public Startup(IConfiguration configuration, IHostingEnvironment hostingEnvironment)
         {
+            connectionKeyStringKey = getConnectionStringKey(hostingEnvironment);
             Configuration = configuration;
+        }
+
+        string getConnectionStringKey(IHostingEnvironment environment)
+        {
+            if (environment.IsDevelopment())
+                return "LocalConnection";
+            else
+                return "DefaultConnection";
         }
 
         public IConfiguration Configuration { get; }
@@ -27,6 +38,7 @@ namespace Attack_And_Defend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -36,7 +48,7 @@ namespace Attack_And_Defend
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                    Configuration.GetConnectionString(connectionKeyStringKey)));
        
             services.AddIdentity<Models.ApplicationUser, IdentityRole>(options =>
             {
