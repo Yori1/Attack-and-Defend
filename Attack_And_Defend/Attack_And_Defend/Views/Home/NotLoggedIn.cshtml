@@ -20,37 +20,39 @@
     </div>
     <div class="col-md-3">
         <div class="informationBlock">
-            <form asp-action="Login" method="post">
-                <p>Login</p>
-                <div>
-                    <label for="UsernameLogin">Username:</label>
-                    <input type="text" name="UsernameLogin" value="SampleUser" />
-                </div>
-                <div>
-                    <label for="PasswordLogin">Password:</label>
-                    <input type="password" name="PasswordLogin" value="Password1!" />
-                </div>
-                <input type="submit" value="Login" class="submit" />
-            </form>
+            <div class="container">
+                <form asp-action="Login" method="post">
+                    <p>Login</p>
+                    <div>
+                        <label for="UsernameLogin">Username:</label>
+                        <input type="text" name="UsernameLogin" value="" />
+                    </div>
+                    <div>
+                        <label for="PasswordLogin">Password:</label>
+                        <input type="password" name="PasswordLogin" value="" />
+                    </div>
+                    <input type="submit" value="Login" class="submit" />
+                </form>
 
-            <form asp-action="Register" method="post">
-                <p>Register</p>
-                <div>
-                    <label for="UsernameRegister">Username:</label>
-                    <input type="text" name="UsernameRegister" value="testacc1" />
-                </div>
-                <div>
-                    <label for="PasswordRegister">Password:</label>
-                    <input type="password" name="PasswordRegister" value="Password1!" />
-                </div>
-                <div>
-                    <label for="PasswordConfirm">Confirm Password:</label><br/>
-                    <input type="password" name="PasswordConfirm" value="Password1!" />
-                </div>
-                <br/>
-                <input type="submit" value="Register" class="submit" />
-            </form>
+                <form asp-action="Register" method="post">
+                    <p>Register</p>
+                    <div>
+                        <label for="UsernameRegister">Username:</label>
+                        <input type="text" name="UsernameRegister" value="" />
+                    </div>
+                    <div>
+                        <label for="PasswordRegister">Password:</label>
+                        <input type="password" name="PasswordRegister" value="" />
+                    </div>
+                    <div>
+                        <label for="PasswordConfirm">Confirm Password:</label><br />
+                        <input type="password" name="PasswordConfirm" value="" />
+                    </div>
+                    <br />
+                    <input type="submit" value="Register" class="submit" />
+                </form>
             </div>
         </div>
+    </div>
         <div class="col-md-1"></div>
     </div>

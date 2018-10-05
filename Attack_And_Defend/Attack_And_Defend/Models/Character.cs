@@ -13,27 +13,36 @@ namespace Attack_And_Defend.Models
         public string Name { get; private set; }
         public int Attack { get; private set; }
         public int MagicDefense { get; private set; }
+        public int PhysicalDefense { get; set; }
         public int Health { get; private set; }
         public bool Fainted { get; private set; }
-        public bool AttacksPhysical { get; private set; }
 
-        public Character(string name, int attack, int magicDefense, int health, bool fainted, bool attacksPhysical)
+
+        public JobNumber JobNumber { get; set; }
+
+        Job job;
+        public bool AttacksPhysical { get; }
+
+        public Character()
         {
-            Name = name;
-            Attack = attack;
-            MagicDefense = magicDefense;
-            Health = health;
-            Fainted = fainted;
-            AttacksPhysical = attacksPhysical;
+           
         }
 
-        public Character(string name, int attack, int magicDefense, int health, bool attacksPhysical)
+        public Character(string name, int attack, int magicDefense, int physicalDefense, int health, JobNumber jobNumber)
         {
             Name = name;
             Attack = attack;
             MagicDefense = magicDefense;
+            PhysicalDefense = physicalDefense;
             Health = health;
-            AttacksPhysical = attacksPhysical;
+            JobNumber = jobNumber;
+
+            job = jobNumberToJobImplementation(jobNumber);
+        }
+
+        public string GetJobName()
+        {
+            return JobNumber.ToString();
         }
 
         public void AttackTarget(Character target)
@@ -48,5 +57,20 @@ namespace Attack_And_Defend.Models
 
         public void UseUniqueAction(Character target)
         { }
+
+        Job jobNumberToJobImplementation(JobNumber jobNumber)
+        {
+            switch(jobNumber)
+            {
+                case JobNumber.Hunter:
+                    return new Hunter();
+
+                case JobNumber.Mage:
+                    return new Mage();
+
+                default:
+                    return null;
+            }
+        }
     }
 }

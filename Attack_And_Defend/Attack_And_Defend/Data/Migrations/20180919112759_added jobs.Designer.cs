@@ -4,14 +4,16 @@ using Attack_And_Defend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Attack_And_Defend.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180919112759_added jobs")]
+    partial class addedjobs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,15 +33,11 @@ namespace Attack_And_Defend.Data.Migrations
 
                     b.Property<int>("Health");
 
-                    b.Property<int>("JobNumber");
-
                     b.Property<int>("MagicDefense");
 
                     b.Property<string>("Name");
 
                     b.Property<int?>("PartyId");
-
-                    b.Property<int>("PhysicalDefense");
 
                     b.HasKey("Id");
 
@@ -54,7 +52,8 @@ namespace Attack_And_Defend.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("ApplicationUserId");
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired();
 
                     b.Property<string>("Name");
 
@@ -252,7 +251,8 @@ namespace Attack_And_Defend.Data.Migrations
                 {
                     b.HasOne("Attack_And_Defend.Models.ApplicationUser", "ApplicationUser")
                         .WithMany("Parties")
-                        .HasForeignKey("ApplicationUserId");
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

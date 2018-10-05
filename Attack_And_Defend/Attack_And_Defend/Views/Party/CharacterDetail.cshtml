@@ -1,0 +1,157 @@
+﻿@model CharacterDetailsViewModel
+@{
+    ViewData["Title"] = "Character";
+
+    Tuple<string, string>[] statsToIncreaseDecrease = { new Tuple<string, string>("attack", "Attack"),
+        new Tuple<string, string>("magicDefense", "MagicDefense"),
+        new Tuple<string, string>("physicalDefense", "PhysicalDefense"),
+        new Tuple<string, string>("health", "Health") };
+}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+
+    $(document).ready(function () {
+            var growthPoints = 8;
+
+    @foreach(var pair in statsToIncreaseDecrease)
+    {
+        @:var @pair.Item1 = 0;
+    }
+
+    var jobNumber;
+
+    function updateGrowthPoints() {
+        $("#growthPoints").text("Growth points remaining: " + growthPoints);
+    }
+
+    function decreaseGrowthPoints() {
+        growthPoints -= 1;
+        updateGrowthPoints();
+    }
+
+    function increaseGrowthPoints() {
+        growthPoints += 1;
+        updateGrowthPoints();
+    }
+
+        $("#submitButton").click(function () {
+            @foreach(var pair in statsToIncreaseDecrease)
+            {@: $("#" +'@pair.Item1'+"Input").val(@pair.Item1);
+        }
+        })
+
+        updateGrowthPoints();
+        $('#plusIconAttack').click(function () {
+            if (growthPoints > 0) {
+                attack += 1;
+                $('#attack').text(attack);
+                decreaseGrowthPoints();
+                updateGrowthPoints();
+            }
+            });
+            $('#minusIconAttack').click(function () {
+                if (growthPoints < 8 && attack > 0) {
+                    attack -= 1;
+                    $('#attack').text(attack);
+                    increaseGrowthPoints();
+                    updateGrowthPoints();
+                }
+        });
+        $('#plusIconMagicDefense').click(function () {
+            if (growthPoints > 0) {
+                magicDefense += 1;
+                $('#magicDefense').text(magicDefense);
+                decreaseGrowthPoints();
+                updateGrowthPoints();
+            }
+        });
+        $('#minusIconMagicDefense').click(function () {
+            if (growthPoints < 8 && magicDefense > 0) {
+                magicDefense -= 1;
+                $('#magicDefense').text(magicDefense);
+                increaseGrowthPoints();
+                updateGrowthPoints();
+            }
+        });
+        $('#plusIconPhysicalDefense').click(function () {
+            if (growthPoints > 0) {
+                physicalDefense += 1;
+                $('#physicalDefense').text(physicalDefense);
+                decreaseGrowthPoints();
+                updateGrowthPoints();
+            }
+        });
+        $('#minusIconPhysicalDefense').click(function () {
+            if (growthPoints < 8 && physicalDefense > 0) {
+                physicalDefense -= 1;
+                $('#physicalDefense').text(physicalDefense);
+                increaseGrowthPoints();
+                updateGrowthPoints();
+            }
+        });
+        $('#plusIconHealth').click(function () {
+            if (growthPoints > 0) {
+                health += 1;
+                $('#health').text(health);
+                decreaseGrowthPoints();
+                updateGrowthPoints();
+            }
+        });
+        $('#minusIconHealth').click(function () {
+            if (growthPoints < 8 && health > 0) {
+                health -= 1;
+                $('#health').text(health);
+                increaseGrowthPoints();
+                updateGrowthPoints();
+            }
+        });
+    });
+</script>
+
+<div class="informationBlock hasNavBar">
+    <form asp-action="SaveCharacter" asp-controller="Party">
+        <div class="row">
+            <div class="col-md-2">
+                <label for="name">Character Name</label>
+                <input type="text" name="name" />
+                <br />
+                <div id="growthPoints"></div>
+                <br />
+                <select name="jobNumber">
+                    <option selected value="0">Mage</option>
+                    <option value="1">Hunter</option>
+                </select>
+            </div>
+            <div class="col-md-10"></div>
+        </div>
+        <br />
+        @foreach (var pair in statsToIncreaseDecrease)
+        {
+            string idNameMinusIcon = "minusIcon" + pair.Item2;
+            string idNamePlusIcon = "plusIcon" + pair.Item2;
+            string idNameHiddenInput = pair.Item1 + "Input";
+
+            <p>@pair.Item2:</p>
+            <div class="row">
+                <div class="col-md-1">
+                    <img style="height: 50%; width: 50%;" id="@idNameMinusIcon" src="~/images/minus.png" />
+                </div>
+                <div class="col-md-1">
+                    <div id="@pair.Item1">
+                        0
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <img style="height: 50%; width: 50%;" id="@idNamePlusIcon" src="~/images/plus.png" />
+                </div>
+                <div class="col-md-9"></div>
+            </div>
+
+            <br />
+            <input type="hidden" id="@idNameHiddenInput" name="@pair.Item1" value="" />
+        }
+        <input type="hidden" name="partyId" value="@Model.PartyId" />
+        <input type="submit" id="submitButton" value="Save" />
+    </form>
+</div>

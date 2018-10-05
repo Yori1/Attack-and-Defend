@@ -4,11 +4,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Attack_And_Defend.Models;
-using Attack_And_Defend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
+
 using Attack_And_Defend.Logic;
+using Attack_And_Defend.Models;
 
 namespace Attack_And_Defend.Controllers
 {
@@ -17,7 +18,7 @@ namespace Attack_And_Defend.Controllers
         UserHandler userHandler;
 
         public HomeController(UserManager<ApplicationUser> userManager, 
-            SignInManager<ApplicationUser> signInManager, ApplicationDbContext context)
+            SignInManager<ApplicationUser> signInManager, Data.ApplicationDbContext context)
         {
              userHandler = new UserHandler(userManager, context, signInManager);
         }

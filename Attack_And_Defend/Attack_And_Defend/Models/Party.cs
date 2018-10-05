@@ -20,14 +20,17 @@ namespace Attack_And_Defend.Models
             Name = name;
         }
 
-        public void AddCharacter(Character character)
+        public bool TryAddCharacter(Character character)
         {
-            Characters.Add(character);
-        }
-
-        public Character GetLeadCharacter()
-        {
-            return null;
+            if (Characters.Count() >= 5)
+            {
+                return false;
+            }
+            else
+            {
+                Characters.Add(character);
+                return true;
+            }
         }
 
         public void ChangeLeadCharacter(int index)

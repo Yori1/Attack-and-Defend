@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Attack_And_Defend.Models;
-using Attack_And_Defend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
+
+using Attack_And_Defend.Models;
+using Attack_And_Defend.Data;
 
 namespace Attack_And_Defend.Logic
 {
@@ -17,16 +18,14 @@ namespace Attack_And_Defend.Logic
         SignInManager<ApplicationUser> signInManager;
 
         public UserHandler(UserManager<ApplicationUser> userManager, ApplicationDbContext context,
-            SignInManager<ApplicationUser> signInManager)
+            SignInManager<ApplicationUser> signInManager) 
         {
             this.userManager = userManager;
             this.context = context;
             this.signInManager = signInManager;
-
-            seedSampleUser();
         }
 
-        void seedSampleUser()
+        public void SeedSampleUser()
         {
             string name = "SampleUser";
             if (!context.Users.Any(u => u.UserName == name))
@@ -39,7 +38,7 @@ namespace Attack_And_Defend.Logic
                 var party = new Party("Party");
 
                 for (int x = 0; x < 5; x++)
-                    party.Characters.Add(new Character("testChar" + (x+1), 2, 2, 2, true));
+                    party.Characters.Add(new Character("testChar" + (x + 1), 2, 2, 2, 2, JobNumber.Mage));
 
                 sampleUser.Parties.Add(party);
 
@@ -47,7 +46,7 @@ namespace Attack_And_Defend.Logic
             }
         }
 
-       public bool TryCreateUser(string username, string password)
+        public bool TryCreateUser(string username, string password)
         {
             ApplicationUser user = new ApplicationUser();
             user.UserName = username;
@@ -56,7 +55,7 @@ namespace Attack_And_Defend.Logic
             return task.Result.Succeeded;
         }
 
-        public bool CheckUserExists(string username)
+        bool checkUserExists(string username)
         {
             return context.Users.Any(u => u.UserName == username);
         }
@@ -79,12 +78,13 @@ namespace Attack_And_Defend.Logic
             return result;
         }
 
-        public ApplicationUser GetSignedInUser(ClaimsPrincipal user)
+        public ApplicationUser GetSignedInUser(ClaimsPrincipal claims)
         {
-            if (user == null)
+            if (claims == null)
                 return null;
-           var result = userManager.GetUserAsync(user).Result;
+            var result = userManager.GetUserAsync(claims).Result;
             return result;
         }
+
     }
 }

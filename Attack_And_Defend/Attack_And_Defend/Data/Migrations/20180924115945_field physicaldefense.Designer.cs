@@ -4,14 +4,16 @@ using Attack_And_Defend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Attack_And_Defend.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180924115945_field physicaldefense")]
+    partial class fieldphysicaldefense
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,8 +32,6 @@ namespace Attack_And_Defend.Data.Migrations
                     b.Property<bool>("Fainted");
 
                     b.Property<int>("Health");
-
-                    b.Property<int>("JobNumber");
 
                     b.Property<int>("MagicDefense");
 

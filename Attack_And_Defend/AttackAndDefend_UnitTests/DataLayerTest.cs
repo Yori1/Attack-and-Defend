@@ -35,7 +35,6 @@ namespace AttackAndDefend_UnitTests
             return options;
         }
 
-        [Fact]
         public void CreateUser()
         {
             SQLiteConnection conn = createDatabaseAndConnection();
