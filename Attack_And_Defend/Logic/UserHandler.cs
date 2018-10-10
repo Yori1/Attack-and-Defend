@@ -23,6 +23,7 @@ namespace Attack_And_Defend.Logic
             this.userManager = userManager;
             this.context = context;
             this.signInManager = signInManager;
+            SeedSampleUser();
         }
 
         public void SeedSampleUser()

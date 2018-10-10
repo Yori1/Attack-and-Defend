@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Attack_And_Defend.Models;
 using Attack_And_Defend.Data;
 
-namespace Attack_And_Defend.Logic
+namespace Attack_And_Defend.Data
 {
     public class PartyRepository
     {
@@ -34,6 +34,11 @@ namespace Attack_And_Defend.Logic
         public bool TryAddParty(string name, string username)
         {
             return context.TryAddParty(name, username);
+        }
+
+        public Dictionary<JobNumber, int> GetAmountForEveryJob()
+        {
+            return context.GetAmountForEveryJob();
         }
 
         public void Complete()

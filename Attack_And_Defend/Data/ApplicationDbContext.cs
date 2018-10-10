@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data.SqlClient;
 using System.Text;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -14,9 +15,65 @@ namespace Attack_And_Defend.Data
         public DbSet<Party> Parties { get; private set; }
         public DbSet<Character> Characters { get; private set; }
 
+        SqlConnection connection;
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
-        { 
+        {
+            EnsureCreatedSqlObjects();
+        }
+
+        void EnsureCreatedSqlObjects()
+        {
+            connection = new SqlConnection(Database.GetDbConnection().ConnectionString);
+            connection.Open();
+            EnsureCreatedRegisteredTrigger();
+            EnsureCreatedProcedureAmountOfJobs();
+            connection.Close();
+        }
+
+        void EnsureObjectCreated(string query, string objectname)
+        {
+            try
+            {
+                new SqlCommand(query, connection).ExecuteNonQuery();
+            }
+
+            catch (SqlException exc)
+            {
+                if (exc.Message != "There is already an object named '"+ objectname +"' in the database.")
+                    throw exc;
+            }
+        }
+
+        void EnsureCreatedProcedureAmountOfJobs()
+        {
+            EnsureObjectCreated("create procedure GetTotalNumberOfCharactersEveryJob as select JobNumber, count(*) as " +
+                "TotalCharactersWithJob from Characters group by JobNumber", "GetTotalNumberOfCharactersEveryJob");
+        }
+
+        void EnsureCreatedRegisteredTrigger()
+        {
+            EnsureObjectCreated("CREATE TRIGGER LogUserRegistered on AspNetUsers after insert as begin insert into UserLog" +
+               "(LogDateTime, LogDescription, UserId, Username) select getdate(), 'User has been inserted.', i.Id, i.UserName" +
+               " from AspNetUsers u inner join inserted i on u.Id = i.Id end", "LogUserRegistered");
+        }
+
+        public Dictionary<JobNumber, int> GetAmountForEveryJob()
+        {
+            connection.Open();
+            var command = new SqlCommand("execute GetTotalNumberOfCharactersEveryJob", connection);
+            var result = new Dictionary<JobNumber, int>();
+            using (var reader = command.ExecuteReader())
+            {
+                while(reader.Read())
+                {
+                    JobNumber job = (JobNumber)int.Parse(reader[0].ToString());
+                    int charactersWithJob = int.Parse(reader[1].ToString());
+                    result.Add(job, charactersWithJob);
+                }
+            }
+            return result;
         }
 
         public List<Party> GetPartiesUser(string username)

@@ -94,5 +94,18 @@ namespace Attack_And_Defend.Data
         {
             return;
         }
+
+        public Dictionary<JobNumber, int> GetAmountForEveryJob()
+        {
+            var query = from character in characters
+                        group character by character.JobNumber into jobs
+                        select new { job = jobs.First().JobNumber, count = jobs.Count() };
+            Dictionary<JobNumber, int> jobAndAmount = new Dictionary<JobNumber, int>();
+            foreach(var pair in query)
+            {
+                jobAndAmount.Add(pair.job, pair.count);
+            }
+            return jobAndAmount;
+        }
     }
 }

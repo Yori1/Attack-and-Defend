@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 
 using Attack_And_Defend.Models;
 using Attack_And_Defend.Logic;
+using Attack_And_Defend.Data;
 
 namespace Attack_And_Defend.Controllers
 {
@@ -16,7 +17,7 @@ namespace Attack_And_Defend.Controllers
         UserManager<ApplicationUser> userManager;
         PartyRepository repository;
 
-        public PartyController(UserManager<ApplicationUser> userManager, Data.ApplicationDbContext context)
+        public PartyController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
             this.userManager = userManager;
             this.repository = new PartyRepository(context);

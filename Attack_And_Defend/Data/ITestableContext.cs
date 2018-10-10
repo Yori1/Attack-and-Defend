@@ -15,6 +15,8 @@ namespace Attack_And_Defend.Data
 
         bool TryAddCharacter(Character character, int idPartyToAddTo);
 
+        Dictionary<JobNumber, int> GetAmountForEveryJob();
+
         void Complete();
     }
 }

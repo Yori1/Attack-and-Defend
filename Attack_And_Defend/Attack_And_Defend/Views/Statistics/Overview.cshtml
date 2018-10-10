@@ -1,0 +1,15 @@
+﻿@model StatisticsViewModel
+@{
+    ViewData["Title"] = "Overview";
+}
+<div class="hasNavBar informationBlock">
+
+    <h1>Class usage by all users:</h1>
+
+    @foreach (var pair in Model.ClassToNumberOfCharacters)
+    {
+        <h2>@pair.Key.ToString()</h2>
+        <p>Number of characters with class: @pair.Value</p>
+    }
+
+</div>

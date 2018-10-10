@@ -32,6 +32,12 @@
                 <form asp-controller="Home" asp-action="Logout" method="post" id="logoutForm" class="navbar-right">
                     <ul class="nav navbar-nav navbar-right">
                         <li>
+                            <a asp-controller="Statistics" asp-action="Overview">Statistics</a>
+                        </li>
+                        <li>
+                            <a asp-controller="Party" asp-action="PartyOverview">My parties</a>
+                        </li>
+                        <li>
                             <div style="margin-top: 15px">Logged in as: @username</div>
                         </li>
                         <li>
