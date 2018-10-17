@@ -5,11 +5,11 @@ using Xunit;
 
 
 using Attack_And_Defend.Models;
-using Attack_And_Defend.Logic;
+using Attack_And_Defend.Data;
 
-namespace RepositoryTest
+namespace Attack_And_Defend_UnitTests;
 {
-    public class UnitTest1
+    public class MemoryRepositoryTests
     {
         PartyRepository partyRepository = new PartyRepository();
 

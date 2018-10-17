@@ -5,13 +5,13 @@ VisualStudioVersion = 15.0.28010.2003
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Attack_And_Defend", "Attack_And_Defend\Attack_And_Defend.csproj", "{186B2472-CD42-44D5-8478-0C99B48B0D90}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RepositoryTest", "DataLayerTests\RepositoryTest.csproj", "{13FBAFF9-E3DF-45BB-819D-657C458181A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Attack_And_Defend_UnitTests", "DataLayerTests\Attack_And_Defend_UnitTests.csproj", "{13FBAFF9-E3DF-45BB-819D-657C458181A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{484C65A1-938C-4C2E-B97D-7358D8163EDE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{484C65A1-938C-4C2E-B97D-7358D8163EDE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logic", "Logic\Logic.csproj", "{91EEB9FA-EEB3-45C3-A5F3-9D318B72E78A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Logic", "Logic\Logic.csproj", "{91EEB9FA-EEB3-45C3-A5F3-9D318B72E78A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csproj", "{40D60E6B-AAB5-4C49-AF03-01A176C8B804}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "Models\Models.csproj", "{40D60E6B-AAB5-4C49-AF03-01A176C8B804}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

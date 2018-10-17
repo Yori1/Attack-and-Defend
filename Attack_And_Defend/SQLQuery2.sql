@@ -1,1 +1,1 @@
-﻿execute GetTotalNumberOfCharactersEveryJob
+﻿drop trigger ValidateCharacterData
