@@ -28,7 +28,7 @@ namespace Attack_And_Defend
         string getConnectionStringKey(IHostingEnvironment environment)
         {
             if (environment.IsDevelopment())
-                return "LocalConnection";
+                return "DefaultConnection";
             else
                 return "DefaultConnection";
         }

@@ -19,8 +19,6 @@ namespace Logic
         {
             this.playerParty = playerParty;
             this.cpuParty = cpuParty;
-            playerCharacter = playerParty.LeadCharacter;
-            cpuCharacter = cpuParty.LeadCharacter;
         }
 
         public void Attack()

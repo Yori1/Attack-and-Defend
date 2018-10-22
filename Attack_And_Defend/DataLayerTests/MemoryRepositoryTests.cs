@@ -7,7 +7,7 @@ using Xunit;
 using Attack_And_Defend.Models;
 using Attack_And_Defend.Data;
 
-namespace Attack_And_Defend_UnitTests;
+namespace Attack_And_Defend_UnitTests
 {
     public class MemoryRepositoryTests
     {
