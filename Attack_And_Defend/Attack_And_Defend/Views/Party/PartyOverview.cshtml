@@ -35,7 +35,7 @@
             }
             partiesDisplayed = partiesDisplayed + 1;
 
-            if (party.Characters.Count() < 5)
+            if (party.Characters.Count() < 7)
             {
                 <a asp-controller="Party" asp-action="AddCharacter" asp-route-partyIdToAddTo="@party.Id">Add new character to @party.Name</a>
             }
