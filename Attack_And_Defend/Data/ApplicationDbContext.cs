@@ -14,6 +14,7 @@ namespace Attack_And_Defend.Data
         public DbSet<ApplicationUser> ApplicationUsers { get; private set; }
         public DbSet<Party> Parties { get; private set; }
         public DbSet<Character> Characters { get; private set; }
+        public DbSet<CombatResult> CombatResults { get; private set; }
 
         SqlConnection connection;
 
@@ -21,6 +22,18 @@ namespace Attack_And_Defend.Data
             : base(options)
         {
             EnsureCreatedSqlObjects();
+        }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<ApplicationUser>()
+                .HasMany(a => a.Parties);
+
+            builder.Entity<CombatResult>()
+                .HasOne(a => a.User);
+
         }
 
         void EnsureCreatedSqlObjects()
@@ -115,13 +128,6 @@ namespace Attack_And_Defend.Data
             return partyToAddTo.TryAddCharacter(character);
         }
 
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            base.OnModelCreating(builder);
-
-            builder.Entity<ApplicationUser>()
-                .HasMany(a => a.Parties);
-        }
 
         public void Complete()
         {
