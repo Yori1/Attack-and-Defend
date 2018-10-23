@@ -20,6 +20,13 @@ namespace Attack_And_Defend.Models
             Name = name;
         }
 
+        public Party(ApplicationUser user, string name, ICollection<Character> characters)
+        {
+            ApplicationUser = user;
+            Name = name;
+            Characters = characters;
+        }
+
         public bool TryAddCharacter(Character character)
         {
             if (Characters.Count() >= 5)

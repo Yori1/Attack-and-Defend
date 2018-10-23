@@ -42,6 +42,8 @@ namespace Attack_And_Defend.Data
             connection.Open();
             EnsureCreatedRegisteredTrigger();
             EnsureCreatedProcedureAmountOfJobs();
+            EnsureCreatedProcedureGetParties();
+            EnsureCreatedProcedureGetCharacters();
             connection.Close();
         }
 
@@ -63,6 +65,26 @@ namespace Attack_And_Defend.Data
         {
             EnsureObjectCreated("create procedure GetTotalNumberOfCharactersEveryJob as select JobNumber, count(*) as " +
                 "TotalCharactersWithJob from Characters group by JobNumber", "GetTotalNumberOfCharactersEveryJob");
+        }
+
+        void EnsureCreatedProcedureGetParties()
+        {
+            EnsureObjectCreated("create procedure GetParties " +
+                "@Username nvarchar(200) " +
+                "as begin " +
+                "select * from dbo.Parties p where (select subU.UserName from dbo.AspNetUsers subU where subU.Id = p.ApplicationUserId) = @Username; " +
+                "end", "GetParties");
+        }
+
+        void EnsureCreatedProcedureGetCharacters()
+        {
+            EnsureObjectCreated(
+                "create procedure GetCharacters @PartyId int " +
+                "as " +
+                "begin " +
+                "select * from Characters ch where ch.PartyId = @PartyId " +
+                "end", "GetCharacters");
+
         }
 
         void EnsureCreatedRegisteredTrigger()
@@ -91,21 +113,54 @@ namespace Attack_And_Defend.Data
 
         public List<Party> GetPartiesUser(string username)
         {
-            var query = from party in Parties where party.ApplicationUser.UserName == username select party;
-            var partylist = query.ToList();
+            List<Party> parties = new List<Party>();
+            connection.Open();
+            List<int> partyIds = new List<int>();
+            List<ApplicationUser> users = new List<ApplicationUser>();
+            List<string> partyNames = new List<string>();
 
-            foreach (Party party in partylist)
+            var command = new SqlCommand("execute GetParties " + username, connection);
+            using (var reader = command.ExecuteReader())
             {
-                getCharacters(party.Id);
+                while (reader.Read())
+                {
+                    partyIds.Add(int.Parse(reader[0].ToString()));
+                    string userId = reader[1].ToString();
+                    users.Add(ApplicationUsers.Where(u => u.Id == userId).First());
+                    partyNames.Add(reader[2].ToString());
+                }
             }
 
-            return partylist;
+            for(int x=0; x<partyIds.Count(); x++)
+            {
+                List<Character> charactersInParty = getCharacters(partyIds[x]);
+                Party party = new Party(users[x], partyNames[x], charactersInParty);
+                parties.Add(party);
+            }
+
+            return parties;
         }
 
-        void getCharacters(int partyID)
+        List<Character> getCharacters(int partyId)
         {
-             var query = from character in Characters where character.Party.Id == partyID select character;
-            var list = query.ToList();
+            List<Character> result = new List<Character>();
+            var command = new SqlCommand("execute GetCharacters " + partyId, connection);
+            using (var reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    string name = reader[2].ToString();
+                    int attack = int.Parse(reader[3].ToString());
+                    int magicDefense = int.Parse(reader[4].ToString());
+                    int health = int.Parse(reader[5].ToString());
+                    int physicalDefense = int.Parse(reader[7].ToString());
+                    JobNumber jobNumber = (JobNumber)int.Parse(reader[8].ToString());
+
+                    Character character = new Character(name,attack,magicDefense,health,physicalDefense,jobNumber);
+                    result.Add(character);
+                }
+            }
+            return result;
         }
 
         public bool TryAddParty(string name, string username)
