@@ -1,14 +1,16 @@
 ﻿create trigger ValidateCharacterCount on Characters
-for insert
+for insert, update
 as
-declare @CountCharactersInParty int;
+begin
+	declare @CountCharactersInParty int;
 
-declare @IdPartyToInsertInto int;
-set @IdPartyToInsertInto = (select Parties.Id from inserted inner join Parties on inserted.PartyId = Parties.Id);
+	declare @IdPartyToInsertInto int;
+	set @IdPartyToInsertInto = (select PartyId from inserted);
 
-set @CountCharactersInParty = (select COUNT(Characters.Id) from Parties inner join Characters on Characters.PartyId = Parties.Id where Parties.Id = @IdPartyToInsertInto);
-if @CountCharactersInParty > 5
-begin;
-rollback transaction;
-return;
+	set @CountCharactersInParty = (select COUNT(Characters.Id) from Parties inner join Characters on Characters.PartyId = Parties.Id where Parties.Id = @IdPartyToInsertInto);
+	if @CountCharactersInParty > 5
+	begin;
+		rollback transaction;
+		return;
+	end;
 end;
