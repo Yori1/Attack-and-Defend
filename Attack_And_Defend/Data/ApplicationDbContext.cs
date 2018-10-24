@@ -33,7 +33,6 @@ namespace Attack_And_Defend.Data
 
             builder.Entity<CombatResult>()
                 .HasOne(a => a.User);
-
         }
 
         void EnsureCreatedSqlObjects()
@@ -44,6 +43,7 @@ namespace Attack_And_Defend.Data
             EnsureCreatedProcedureAmountOfJobs();
             EnsureCreatedProcedureGetParties();
             EnsureCreatedProcedureGetCharacters();
+            EnsureCreatedUserLogTable();
             connection.Close();
         }
 
@@ -92,6 +92,17 @@ namespace Attack_And_Defend.Data
             EnsureObjectCreated("CREATE TRIGGER LogUserRegistered on AspNetUsers after insert as begin insert into UserLog" +
                "(LogDateTime, LogDescription, UserId, Username) select getdate(), 'User has been inserted.', i.Id, i.UserName" +
                " from AspNetUsers u inner join inserted i on u.Id = i.Id end", "LogUserRegistered");
+        }
+
+        void EnsureCreatedUserLogTable()
+        {
+            EnsureObjectCreated("CREATE TABLE [dbo].[UserLog] ( [Id]  INT  IDENTITY(1, 1) NOT NULL, " +
+                "[LogDateTime]    DATETIME      NULL, " +
+                "[LogDescription] NVARCHAR(50) NULL, " +
+                "[UserId]         NVARCHAR(50) NULL, " +
+                "[Username]       NVARCHAR(50) NULL, " +
+                "PRIMARY KEY CLUSTERED([Id] ASC)" +
+                ");", "UserLog");
         }
 
         public Dictionary<JobNumber, int> GetAmountForEveryJob()
@@ -153,10 +164,10 @@ namespace Attack_And_Defend.Data
                     int attack = int.Parse(reader[3].ToString());
                     int magicDefense = int.Parse(reader[4].ToString());
                     int health = int.Parse(reader[5].ToString());
-                    int physicalDefense = int.Parse(reader[7].ToString());
-                    JobNumber jobNumber = (JobNumber)int.Parse(reader[8].ToString());
+                    int physicalDefense = int.Parse(reader[6].ToString());
+                    JobNumber jobNumber = (JobNumber)int.Parse(reader[7].ToString());
 
-                    Character character = new Character(name,attack,magicDefense,health,physicalDefense,jobNumber);
+                    Character character = new Character(name,attack,magicDefense,health,physicalDefense, jobNumber);
                     result.Add(character);
                 }
             }

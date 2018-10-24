@@ -22,10 +22,14 @@ namespace Attack_And_Defend.Controllers
         public CombatController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
             repository = new PartyRepository(context);
-            username = userManager.GetUserAsync(User).Result.UserName;
         }
 
         public IActionResult LevelSelect()
+        {
+            return View();
+        }
+
+        public IActionResult Combat()
         {
             return View();
         }
