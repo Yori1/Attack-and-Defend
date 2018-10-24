@@ -9,6 +9,7 @@ namespace Attack_And_Defend.Models
     public class ApplicationUser: IdentityUser
     {
         public ICollection<Party> Parties { get; private set; } = new List<Party>();
+        public int SelectedPartyIndex { get; private set; }
 
         public ApplicationUser() { }
 

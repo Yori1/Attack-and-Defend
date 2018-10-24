@@ -1,28 +1,63 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
 using Attack_And_Defend.Models;
 using Attack_And_Defend.Data;
 
-namespace Logic
+namespace Attack_And_Defend.Logic
 {
-    class CombatHandler
+    public class CombatHandler
     {
-        Party playerParty;
-        Party cpuParty;
+        public Party PlayerParty;
+        public Party CpuParty;
 
-        Character playerCharacter;
-        Character cpuCharacter;
+        List<Party> parties;
+
+        public bool? PlayerWon = null;
 
         public CombatHandler(Party playerParty, Party cpuParty)
         {
-            this.playerParty = playerParty;
-            this.cpuParty = cpuParty;
+            this.PlayerParty = playerParty;
+            this.CpuParty = cpuParty;
         }
 
         public void Attack()
         {
+            PlayerParty.ActiveCharacter.AttackTarget(CpuParty.ActiveCharacter);
+            ensureBothPartiesCanContinue();
+            if (PlayerWon == null)
+            {
+                letOpponentChooseMove();
+                ensureBothPartiesCanContinue();
+            }
         }
+
+        void letOpponentChooseMove()
+        {
+            CpuParty.ActiveCharacter.AttackTarget(PlayerParty.ActiveCharacter);
+        }
+
+        void ensureBothPartiesCanContinue()
+        {
+            ensurePartyCanContinue(PlayerParty);
+            ensurePartyCanContinue(CpuParty);
+        }
+
+        void ensurePartyCanContinue(Party party)
+        {
+            if (party.ActiveCharacter.Fainted)
+            {
+                bool opponentOutOfCharacters = party.TryRotateActiveCharacter();
+                if (opponentOutOfCharacters)
+                    PlayerWon = party == PlayerParty;
+            }
+        }
+
+        enum CPUDecision
+        {
+
+        }
+
     }
+
 }

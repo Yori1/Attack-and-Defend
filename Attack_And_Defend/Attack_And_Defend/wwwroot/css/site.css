@@ -24,6 +24,26 @@ input {
     color: white !important;
 }
 
+.combatButton {
+    margin: auto;
+    font-size: 20px;
+    color: white;
+    border-color: #42033D;
+    background-color: #6C4B5E;
+    display: inline-block;
+    border-style: solid;
+}
+
+.lightPurpleBackground {
+    background-color: #6C4B5E;
+}
+
+#logBox{
+    border: solid;
+    border-color: black;
+    border-width: 2px;
+}
+
 /* Wrapping element */
 /* Set some basic padding to keep content from hitting the edges */
 .body-content {

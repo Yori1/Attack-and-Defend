@@ -1,0 +1,63 @@
+﻿
+@{
+    ViewData["Title"] = "Combat";
+}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script>
+    $.ready(function (
+
+    ));
+</script>
+
+<div class="informationBlock hasNavBar">
+    <h2>Combat</h2>
+    <div class="row">
+        <div class="col-md-6">
+            @for (int x = 0; x < 5; x++)
+            {
+                <div class="col-md-1">
+                    <img style="width: 100%;" src="~/images/stickman.png" />
+                </div>
+            }
+        </div>
+        <div class="col-md-6">
+            <div class="col-md"></div>
+            @for (int x = 0; x < 5; x++)
+            {
+                <div class="col-md-1">
+                    <img style="width: 100%;" src="~/images/stickman.png" />
+                </div>
+            }
+        </div>
+    </div>
+    <br />
+
+    <div class="row">
+        <div class="col-md-6">
+            <div style="margin-left: 10px;">
+                <p>Charactername</p>
+                <p>Health: 50/80</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div style="margin-left: 10px;">
+                <p>Charactername</p>
+                <p>Health: 50/80</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="logBox" class="lightPurpleBackground" style="height:60px;" overflow:auto;">
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-6 text-center">
+            <button class="combatButton">Attack</button>
+        </div>
+        <div class="col-md-6 text-center">
+            <button class="combatButton">Skill</button>
+        </div>
+    </div>
+</div>
