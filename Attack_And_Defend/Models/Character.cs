@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Attack_And_Defend.Models
 {
-    public class Character
+    public abstract class Character
     {
         public int Id { get; private set; }
 
@@ -15,36 +15,23 @@ namespace Attack_And_Defend.Models
         public int MagicDefense { get; private set; }
         public int PhysicalDefense { get; private set; }
         public int Health { get; private set; }
-        public bool AttacksPhysical { get; }
+        public bool CanUseSkill { get; private set; } = true;
+        public bool AttacksPhysical { get; private set; }
 
         public bool Fainted;
-        public bool DefenseTypeExposed;
 
-
-        public JobNumber JobNumber { get; set; }
-
-        Job job;
-        public Character()
-        {
-
-        }
-
-        public Character(string name, int attack, int magicDefense, int physicalDefense, int health, JobNumber jobNumber)
+        public Character(string name, int attack, int magicDefense, int physicalDefense, int health)
         {
             Name = name;
             Attack = attack;
             MagicDefense = magicDefense;
             PhysicalDefense = physicalDefense;
             Health = health;
-            JobNumber = jobNumber;
-
-            job = jobNumberToJobImplementation(jobNumber);
         }
 
-        public string GetJobName()
-        {
-            return JobNumber.ToString();
-        }
+        public abstract void UseUniqueAction(Character target);
+
+        public abstract string GetJobName();
 
         public void AttackTarget(Character target)
         {
@@ -68,20 +55,15 @@ namespace Attack_And_Defend.Models
             }
         }
 
-        public void UseUniqueAction(Character target)
-        {
-
-        }
-
-        Job jobNumberToJobImplementation(JobNumber jobNumber)
+        public static Character GetConcreteCharacter(string name, int attack, int magicDefense, int physicalDefense, int health, JobNumber jobNumber)
         {
             switch (jobNumber)
             {
                 case JobNumber.Hunter:
-                    return new Hunter();
+                    return new Hunter(name, attack, magicDefense, physicalDefense, health);
 
                 case JobNumber.Mage:
-                    return new Mage();
+                    return new Mage(name, attack, magicDefense, physicalDefense, health);
 
                 default:
                     return null;

@@ -167,7 +167,7 @@ namespace Attack_And_Defend.Data
                     int physicalDefense = int.Parse(reader[6].ToString());
                     JobNumber jobNumber = (JobNumber)int.Parse(reader[7].ToString());
 
-                    Character character = new Character(name,attack,magicDefense,health,physicalDefense, jobNumber);
+                    Character character = Character.GetConcreteCharacter(name,attack,magicDefense,health,physicalDefense, jobNumber);
                     result.Add(character);
                 }
             }

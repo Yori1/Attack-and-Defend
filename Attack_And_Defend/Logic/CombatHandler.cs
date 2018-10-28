@@ -53,9 +53,22 @@ namespace Attack_And_Defend.Logic
             }
         }
 
+        CPUDecision makeRandomDecision(Character cpuCharacter)
+        {
+            Random random = new Random();
+            if (cpuCharacter.CanUseSkill)
+            {
+                if (random.Next(0, 1) == 1)
+                    return CPUDecision.Skill;
+            }
+            else
+                return CPUDecision.Attack;
+        }
+
         enum CPUDecision
         {
-
+            Attack,
+            Skill
         }
 
     }
