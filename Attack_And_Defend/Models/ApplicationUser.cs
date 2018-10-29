@@ -21,5 +21,13 @@ namespace Attack_And_Defend.Models
             Parties = new List<Party>();
         }
 
+        public void AddParty(Party party)
+        {
+            if (party.Characters.Count() == 0)
+                SelectedPartyIndex = 0;
+
+
+        }
+
     }
 }

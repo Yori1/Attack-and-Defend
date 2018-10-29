@@ -60,7 +60,7 @@ namespace Attack_And_Defend.Data
 
             catch (SqlException exc)
             {
-                if (exc.Message != "There is already an object named '"+ objectname +"' in the database.")
+                if (exc.Message != "There is already an object named '" + objectname + "' in the database.")
                     throw exc;
             }
         }
@@ -116,7 +116,7 @@ namespace Attack_And_Defend.Data
             var result = new Dictionary<JobNumber, int>();
             using (var reader = command.ExecuteReader())
             {
-                while(reader.Read())
+                while (reader.Read())
                 {
                     JobNumber job = (JobNumber)int.Parse(reader[0].ToString());
                     int charactersWithJob = int.Parse(reader[1].ToString());
@@ -133,6 +133,7 @@ namespace Attack_And_Defend.Data
             List<int> partyIds = new List<int>();
             List<ApplicationUser> users = new List<ApplicationUser>();
             List<string> partyNames = new List<string>();
+            List<int> indexesLeadCharacter = new List<int>();
 
             var command = new SqlCommand("execute GetParties " + username, connection);
             using (var reader = command.ExecuteReader())
@@ -143,13 +144,14 @@ namespace Attack_And_Defend.Data
                     string userId = reader[1].ToString();
                     users.Add(ApplicationUsers.Where(u => u.Id == userId).First());
                     partyNames.Add(reader[2].ToString());
+                    indexesLeadCharacter.Add(int.Parse(reader[3].ToString()));
                 }
             }
 
-            for(int x=0; x<partyIds.Count(); x++)
+            for (int x = 0; x < partyIds.Count(); x++)
             {
                 List<Character> charactersInParty = getCharacters(partyIds[x]);
-                Party party = new Party(users[x], partyNames[x], charactersInParty, partyIds[x]);
+                Party party = new Party(users[x], partyNames[x], charactersInParty, indexesLeadCharacter[x], partyIds[x]);
                 parties.Add(party);
             }
 
@@ -171,7 +173,7 @@ namespace Attack_And_Defend.Data
                     int physicalDefense = int.Parse(reader[6].ToString());
                     JobNumber jobNumber = (JobNumber)int.Parse(reader[10].ToString());
 
-                    Character character = Character.GetConcreteCharacter(name,attack,magicDefense,health,physicalDefense, jobNumber);
+                    Character character = Character.GetConcreteCharacter(name, attack, magicDefense, health, physicalDefense, jobNumber);
                     result.Add(character);
                 }
             }
@@ -195,9 +197,25 @@ namespace Attack_And_Defend.Data
         {
             var partyToAddToQuery = from party in Parties where party.Id == idPartyToAddTo select party;
             Party partyToAddTo = partyToAddToQuery.First();
+
+
             return partyToAddTo.TryAddCharacter(character);
         }
 
+        string getUserIdFromPartyId(int partyId)
+        {
+            var queryUserId = from user in ApplicationUsers
+                              join party in Parties on user.Id equals party.ApplicationUser.Id
+                              where party.Id == partyId
+                              select user.Id;
+            string userId = queryUserId.First();
+            return userId;
+        }
+
+        bool CheckUserHasParties(string userId)
+        {
+            return (Parties.Where(u => u.ApplicationUser.Id == userId).Count()) > 0;
+        }
 
         public void Complete()
         {

@@ -1,8 +1,23 @@
-﻿@model List<Party>
+﻿@model PartyOverviewViewModel
 @{
     var model = Model;
     int partiesDisplayed = 0;
 }
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+    })
+
+    function ChangePartyIndexLeadCharacter(index, partyId) {
+        $.post('party/ChangeLeadCharacter', { index: index, partyId: partyId })
+            .done(function (data) {
+
+            })
+        });
+    }
+
+</script>
 
 <div class="informationBlock hasNavBar">
     <div class="container">
@@ -11,12 +26,12 @@
             <input name="partyName" type="text" />
             <input type="submit" value="Add party" />
         </form>
-        @if (Model.Count() == 0)
+        @if (Model.PartyList.Count() == 0)
         {
             <br />
             <div>You don't have any parties.</div>
         }
-        @foreach (Party party in model)
+        @foreach (Party party in model.PartyList)
         {
             int partyNumber = partiesDisplayed + 1;
             <h1>#@partyNumber @party.Name</h1>
@@ -34,13 +49,31 @@
                             <br />Attack: @character.Attack
                             <br />Physical Defense: @character.PhysicalDefense
                             <br />Magic Defense: @character.MagicDefense
+
+                            <div class="row">
+                                <div class="col-md-4"> 
+                                    @if (party.IndexLeadCharacter == x)
+                                    {
+                                        <img style="width: 100%;" src="~/images/star.png" />
+                                    }
+                                    else
+                                    {
+                                        string id = "clickableStar" + Model.PartyList.IndexOf(party);
+                                        int indexToChangeTo = x;
+                                        int partyId = party.Id;
+                                        string functionCall = "ChangePartyIndexLeadCharacter(" + indexToChangeTo + "," + partyId + ");";
+                                        <img id="@id" onclick="@functionCall" style="width: 100%;" src="~/images/greystar.png" />
+                                    }
+                                </div>
+                                <div class="col-md"></div>
+                            </div>
                         </div>
                     }
 
                     else
                     {
                         <div class="col-md-2">
-                            <br /><b>Empty</b>
+                            <b>Empty</b>
                             <br />
                             @if (party.Characters.Count() < 5)
                             {
@@ -49,8 +82,8 @@
                         </div>
                     }
                 }
-                                    
-                        <div class="col-md-2"></div>
+
+                <div class="col-md-2"></div>
             </div>
 
             partiesDisplayed = partiesDisplayed + 1;

@@ -30,10 +30,26 @@ namespace Attack_And_Defend.Controllers
 
         public IActionResult PartyOverview()
         {
-            List<Party> model = repository.GetPartiesUser(getCurrentUserUsername());
+            PartyOverviewViewModel vm;
+            List<Party> parties = repository.GetPartiesUser(getCurrentUserUsername());
+            int selectedPartyIndex = userManager.GetUserAsync(User).Result.SelectedPartyIndex;
             repository.Complete();
-            return View(model);
+            vm = new PartyOverviewViewModel(selectedPartyIndex, parties);
+            return View(vm);
         }
+
+        [HttpPost]
+        public JsonResult ChangeLeadCharacter(int partyId, int indexNewLeadCharacter)
+        {
+            var party = getUserParty(partyId);
+            party.ChangeLeadCharacter(indexNewLeadCharacter);
+            repository.Complete();
+            object result = new { success = true };
+            return new JsonResult(result);
+        }
+
+        Party getUserParty(int partyId)
+        { return repository.GetPartiesUser(getCurrentUserUsername()).Where(p => p.Id == partyId).First(); }
 
         public IActionResult AddParty(string partyName)
         {
@@ -46,6 +62,8 @@ namespace Attack_And_Defend.Controllers
         {
             return View("Views/Party/CharacterDetail.cshtml", new CharacterDetailsViewModel(partyIdToAddTo));
         }
+
+
 
         [HttpPost]
         public IActionResult SaveCharacter(string name, int attack, int magicDefense, int physicalDefense, int health, JobNumber jobNumber, int partyId)

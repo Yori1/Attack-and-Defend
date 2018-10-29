@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Attack_And_Defend.Models
 {
@@ -13,9 +14,10 @@ namespace Attack_And_Defend.Models
         public ApplicationUser ApplicationUser { get; private set; }
         public string Name { get; private set; }
         public List<Character> Characters { get; private set; } = new List<Character>();
-        int leadCharacterIndex;
+        public int IndexLeadCharacter { get; private set; }
 
-        public Character ActiveCharacter;
+        [NotMapped]
+        public Character ActiveCharacter { get; private set; }
 
         int CharactersTried = 0;
 
@@ -24,12 +26,13 @@ namespace Attack_And_Defend.Models
             Name = name;
         }
 
-        public Party(ApplicationUser user, string name, List<Character> characters, int id = 0)
+        public Party(ApplicationUser user, string name, List<Character> characters, int indexLeadCharacter = 0, int id = 0)
         {
             ApplicationUser = user;
             Name = name;
             Characters = characters;
             Id = id;
+            IndexLeadCharacter = indexLeadCharacter;
         }
 
         public bool TryAddCharacter(Character character)
@@ -38,11 +41,12 @@ namespace Attack_And_Defend.Models
             {
                 return false;
             }
-            else
+            Characters.Add(character);
+            if (Characters.Count() == 1)
             {
-                Characters.Add(character);
-                return true;
+                ChangeLeadCharacter(0);
             }
+            return true;
         }
 
         public bool TryRotateActiveCharacter()
@@ -80,7 +84,7 @@ namespace Attack_And_Defend.Models
 
         public void ChangeLeadCharacter(int index)
         {
-            leadCharacterIndex = index;
+            IndexLeadCharacter = index;
         }
     }
 }

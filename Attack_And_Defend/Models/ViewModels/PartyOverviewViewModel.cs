@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Text;
 using Attack_And_Defend.Models;
 
-namespace Models.ViewModels
+namespace Attack_And_Defend.Models
 {
-    class PartyOverviewViewModel
+    public class PartyOverviewViewModel
     {
-        public Character LeadCharacter { get; private set; }
+        public int IndexSelectedParty { get; private set; }
         public List<Party> PartyList { get; private set; }
 
-        public PartyOverviewViewModel(Character character, List<Party> parties)
+        public PartyOverviewViewModel(int indexSelectedParty, List<Party> partyList)
         {
-            LeadCharacter = character;
-            PartyList = parties;
+            IndexSelectedParty = indexSelectedParty;
+            PartyList = partyList;
         }
     }
 }

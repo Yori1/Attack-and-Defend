@@ -24,7 +24,7 @@ namespace Attack_And_Defend.Data
 
             var query = from sampleuser in applicationUsers where sampleuser.UserName == "SampleUser" select sampleuser;
             TestableUser sampleUser = query.First();
-            var party = new Party("Party");
+            var party = new Party(null, "Party", null);
 
             for (int x = 0; x < 5; x++)
                 party.Characters.Add(Character.GetConcreteCharacter("testChar" + (x + 1), 2, 2, 2, 2, JobNumber.Mage));
@@ -74,7 +74,7 @@ namespace Attack_And_Defend.Data
             var query = from party in getAllParties() where party.Name == nameToUse select party;
             if (query.Count() > 0)
                 return false;
-            Party partyToAdd = new Party(name);
+            Party partyToAdd = new Party(null, name, null);
             applicationUsers.Where(u => u.UserName == username).First().Parties.Add(partyToAdd);
             return true;
         }
