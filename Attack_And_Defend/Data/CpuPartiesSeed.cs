@@ -14,9 +14,9 @@ namespace Attack_And_Defend.Data
         {
             List<Character> charactersParty1 = new List<Character>()
             {
-                new Character("Enemy", 2,2,2,2,JobNumber.Hunter),
-                new Character("Enemy", 2,2,2,2,JobNumber.Hunter),
-                new Character("Enemy", 2,2,2,2,JobNumber.Hunter)
+                Character.GetConcreteCharacter("Enemy", 2,2,2,2,JobNumber.Hunter),
+                Character.GetConcreteCharacter("Enemy", 2,2,2,2,JobNumber.Hunter),
+                Character.GetConcreteCharacter("Enemy", 2,2,2,2,JobNumber.Hunter)
             };
             parties.Add(new Party(null, "1", charactersParty1));
         }

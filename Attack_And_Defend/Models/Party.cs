@@ -24,11 +24,12 @@ namespace Attack_And_Defend.Models
             Name = name;
         }
 
-        public Party(ApplicationUser user, string name, List<Character> characters)
+        public Party(ApplicationUser user, string name, List<Character> characters, int id = 0)
         {
             ApplicationUser = user;
             Name = name;
             Characters = characters;
+            Id = id;
         }
 
         public bool TryAddCharacter(Character character)

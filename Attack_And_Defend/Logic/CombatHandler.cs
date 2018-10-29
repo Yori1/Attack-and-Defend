@@ -61,8 +61,7 @@ namespace Attack_And_Defend.Logic
                 if (random.Next(0, 1) == 1)
                     return CPUDecision.Skill;
             }
-            else
-                return CPUDecision.Attack;
+            return CPUDecision.Attack;
         }
 
         enum CPUDecision

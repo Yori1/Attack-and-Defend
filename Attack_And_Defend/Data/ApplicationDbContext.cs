@@ -28,6 +28,10 @@ namespace Attack_And_Defend.Data
         {
             base.OnModelCreating(builder);
 
+            builder.Entity<Hunter>();
+
+            builder.Entity<Mage>();
+
             builder.Entity<ApplicationUser>()
                 .HasMany(a => a.Parties);
 
@@ -145,7 +149,7 @@ namespace Attack_And_Defend.Data
             for(int x=0; x<partyIds.Count(); x++)
             {
                 List<Character> charactersInParty = getCharacters(partyIds[x]);
-                Party party = new Party(users[x], partyNames[x], charactersInParty);
+                Party party = new Party(users[x], partyNames[x], charactersInParty, partyIds[x]);
                 parties.Add(party);
             }
 
@@ -165,7 +169,7 @@ namespace Attack_And_Defend.Data
                     int magicDefense = int.Parse(reader[4].ToString());
                     int health = int.Parse(reader[5].ToString());
                     int physicalDefense = int.Parse(reader[6].ToString());
-                    JobNumber jobNumber = (JobNumber)int.Parse(reader[7].ToString());
+                    JobNumber jobNumber = (JobNumber)int.Parse(reader[10].ToString());
 
                     Character character = Character.GetConcreteCharacter(name,attack,magicDefense,health,physicalDefense, jobNumber);
                     result.Add(character);

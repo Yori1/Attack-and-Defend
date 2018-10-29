@@ -27,7 +27,7 @@ namespace Attack_And_Defend.Data
             var party = new Party("Party");
 
             for (int x = 0; x < 5; x++)
-                party.Characters.Add(new Character("testChar" + (x + 1), 2, 2, 2, 2, JobNumber.Mage));
+                party.Characters.Add(Character.GetConcreteCharacter("testChar" + (x + 1), 2, 2, 2, 2, JobNumber.Mage));
 
             sampleUser.Parties.Add(party);
         }

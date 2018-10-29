@@ -8,12 +8,7 @@ namespace Attack_And_Defend.Models
     public class Hunter: Character
     {
        public Hunter(string name, int attack, int magicDefense, int physicalDefense, int health) : base(name, attack, magicDefense, physicalDefense, health)
-        { }
-
-        public override string GetJobName()
-        {
-            return "Hunter";
-        }
+        { this.JobNumber = JobNumber.Hunter; }
 
         public override void UseUniqueAction(Character target)
         {

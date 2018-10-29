@@ -17,6 +17,7 @@ namespace Attack_And_Defend.Models
         public int Health { get; private set; }
         public bool CanUseSkill { get; private set; } = true;
         public bool AttacksPhysical { get; private set; }
+        public JobNumber JobNumber { get; protected set; }
 
         public bool Fainted;
 
@@ -30,8 +31,6 @@ namespace Attack_And_Defend.Models
         }
 
         public abstract void UseUniqueAction(Character target);
-
-        public abstract string GetJobName();
 
         public void AttackTarget(Character target)
         {
