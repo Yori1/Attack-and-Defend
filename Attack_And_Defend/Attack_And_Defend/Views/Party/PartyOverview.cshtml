@@ -3,19 +3,28 @@
     var model = Model;
     int partiesDisplayed = 0;
 }
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
-
-    })
+    });
 
     function ChangePartyIndexLeadCharacter(index, partyId) {
-        $.post('party/ChangeLeadCharacter', { index: index, partyId: partyId })
+        $.post('ChangeLeadCharacter', { indexNewLeadCharacter: index, partyId: partyId })
             .done(function (data) {
-
+                if (data.success == true) {
+                    location.reload();
+                }
             })
-        });
     }
+
+    function ChangeIndexActiveParty(index) {
+        $.post('ChangeActiveParty', { partyIndex: index })
+            .done(function (data) {
+                if (data.success == true)
+                    location.reload();
+            })
+        }
 
 </script>
 
@@ -31,10 +40,26 @@
             <br />
             <div>You don't have any parties.</div>
         }
-        @foreach (Party party in model.PartyList)
+        @for (int partyCounter = 0; partyCounter < Model.PartyList.Count(); partyCounter++)
         {
+            Party party = Model.PartyList.ElementAt(partyCounter);
             int partyNumber = partiesDisplayed + 1;
-            <h1>#@partyNumber @party.Name</h1>
+            bool activeParty = Model.IndexSelectedParty == partyCounter;
+            if (activeParty)
+            {
+                <h1>#@partyNumber @party.Name</h1>
+            }
+            else
+            {
+                <div class="row">
+                    <div class="col-md-7">
+                        <h1>#@partyNumber @party.Name </h1>
+                    </div>
+                    <div class="col-md-5">
+                    </div>
+                </div>
+            }
+
             <div class="row">
 
                 @for (int x = 0; x < 5; x++)
@@ -51,7 +76,7 @@
                             <br />Magic Defense: @character.MagicDefense
 
                             <div class="row">
-                                <div class="col-md-4"> 
+                                <div class="col-md-4">
                                     @if (party.IndexLeadCharacter == x)
                                     {
                                         <img style="width: 100%;" src="~/images/star.png" />
@@ -61,7 +86,7 @@
                                         string id = "clickableStar" + Model.PartyList.IndexOf(party);
                                         int indexToChangeTo = x;
                                         int partyId = party.Id;
-                                        string functionCall = "ChangePartyIndexLeadCharacter(" + indexToChangeTo + "," + partyId + ");";
+                                        string functionCall = "ChangePartyIndexLeadCharacter(" + indexToChangeTo + "," + partyId + ")";
                                         <img id="@id" onclick="@functionCall" style="width: 100%;" src="~/images/greystar.png" />
                                     }
                                 </div>
@@ -88,6 +113,11 @@
 
             partiesDisplayed = partiesDisplayed + 1;
 
+            if (!activeParty)
+            {
+                string functionCall = "ChangeIndexActiveParty(" + partyCounter + ")";
+                <br /><button onclick="@functionCall" style="font-size:120%; margin: 5px;">Set @party.Name as active party</button>
+            }
 
         }
 

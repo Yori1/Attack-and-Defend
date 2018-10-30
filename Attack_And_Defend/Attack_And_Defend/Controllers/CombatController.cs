@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Attack_And_Defend.Models;
 using Attack_And_Defend.Logic;
 using Attack_And_Defend.Data;
@@ -12,16 +13,14 @@ namespace Attack_And_Defend.Controllers
 {
     public class CombatController : Controller
     {
-        PartyRepository repository;
+        ApplicationDbContext context;
+        UserManager<ApplicationUser> userManager;
         CombatHandler combatHandler;
-        CpuPartiesSeed seed = new CpuPartiesSeed();
-
-        string username;
-
 
         public CombatController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
-            repository = new PartyRepository(context);
+            this.context = context;
+            this.userManager = userManager;
         }
 
         public IActionResult LevelSelect()
@@ -34,12 +33,32 @@ namespace Attack_And_Defend.Controllers
             return View();
         }
 
-        /* public IActionResult Combat(string level)
-         {
-             Party userParty = repository.GetPartiesUser(username);
-             combatHandler = new CombatHandler();
-             return View();
-    }*/
+        public IActionResult Combat(string level)
+        {
+            return View();
+        }
+        /*
+        CombatHandler getCombatHandlerFromSession()
+        {
+            string json = HttpContext.Session.GetString("CombatHandler");
+            if (json == null)
+            {
 
+            }
+        }
+
+        CombatHandler createNewCombatHandler(int cpuLevel)
+        {
+            CpuPartiesSeed seed = new CpuPartiesSeed();
+            string username = userManager.GetUserAsync(User).Result.UserName;
+            Party userParty = context.GetActiveParty(username);
+            Party cpuParty = seed.GetCPUPartyByLevel(cpuLevel.ToString());
+            var combatHandler = new CombatHandler(userParty, cpuParty);
+        }
+        */
+        void saveCombatHandlerInSession(CombatHandler combatHandler)
+        {
+            
+        }
     }
 }

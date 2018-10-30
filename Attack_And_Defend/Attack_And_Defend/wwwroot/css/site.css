@@ -5,15 +5,19 @@ body {
     color: white !important;
 }
 
-select
-{
+select {
     color: black !important;
 }
 
-input {
+button, input {
     background-color: #680E4B;
     border: none;
 }
+
+    button:focus {
+        outline: 0;
+    }
+
 
 .hasNavBar {
     margin-top: 60px;
@@ -38,7 +42,7 @@ input {
     background-color: #6C4B5E;
 }
 
-#logBox{
+#logBox {
     border: solid;
     border-color: black;
     border-width: 2px;

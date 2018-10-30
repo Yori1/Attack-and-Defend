@@ -1,4 +1,5 @@
-﻿
+﻿@model LoginViewModel;
+
 @{
     ViewData["Title"] = "NotLoggedInHome";
     Layout = "";
@@ -51,6 +52,12 @@
                     <br />
                     <input type="submit" value="Register" class="submit" />
                 </form>
+
+                <p>@Model.CustomErrorMessage</p>
+                @foreach (var error in Model.IdentityErrors)
+                {
+                    @error.Description
+                }
             </div>
         </div>
     </div>

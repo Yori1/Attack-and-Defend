@@ -1,8 +1,17 @@
 ﻿@inject Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> usermanager;
+@inject Attack_And_Defend.Data.ApplicationDbContext context;
+@using Microsoft.EntityFrameworkCore;
 
-@{ 
-    ApplicationUser loggedInUser = usermanager.GetUserAsync(User).Result;
-    string username = loggedInUser.UserName;
+@{
+    string username = usermanager.GetUserAsync(User).Result.UserName;
+    ApplicationUser loggedInUser = context.ApplicationUsers.Include(u => u.Parties)
+        .Where(u=>u.UserName == username).First();
+    bool hasParties = loggedInUser.Parties.Count() > 0;
+    string activePartyName = null;
+    if(hasParties)
+    {
+        activePartyName = loggedInUser.GetActiveParty().Name;
+    }
 }
 
 <!DOCTYPE html>
@@ -31,6 +40,14 @@
 
                 <form asp-controller="Home" asp-action="Logout" method="post" id="logoutForm" class="navbar-right">
                     <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <div style="color: white" class="navbar-text">
+                                @if (hasParties)
+                                {
+                                    <div>Selected Party: @activePartyName </div>
+                                }
+                            </div>
+                        </li>
                         <li>
                             <a asp-controller="Statistics" asp-action="Overview">Statistics</a>
                         </li>

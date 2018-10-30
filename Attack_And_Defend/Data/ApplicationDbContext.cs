@@ -39,6 +39,7 @@ namespace Attack_And_Defend.Data
                 .HasOne(a => a.User);
         }
 
+        #region EnsureCreationSqlObjects
         void EnsureCreatedSqlObjects()
         {
             connection = new SqlConnection(Database.GetDbConnection().ConnectionString);
@@ -108,7 +109,9 @@ namespace Attack_And_Defend.Data
                 "PRIMARY KEY CLUSTERED([Id] ASC)" +
                 ");", "UserLog");
         }
+        #endregion
 
+        #region UsedInPartyOverview
         public Dictionary<JobNumber, int> GetAmountForEveryJob()
         {
             connection.Open();
@@ -202,6 +205,13 @@ namespace Attack_And_Defend.Data
             return partyToAddTo.TryAddCharacter(character);
         }
 
+        public void ChangeActiveParty(int partyIndex, string username)
+        {
+            ApplicationUser user = ApplicationUsers.Include(s=>s.Parties).Where(u => u.UserName == username).First();
+            user.ChangeSelectedPartyIndex(partyIndex);
+            Entry(user).State = EntityState.Modified;
+        }
+
         string getUserIdFromPartyId(int partyId)
         {
             var queryUserId = from user in ApplicationUsers
@@ -212,10 +222,17 @@ namespace Attack_And_Defend.Data
             return userId;
         }
 
-        bool CheckUserHasParties(string userId)
+        #endregion
+
+        #region UsedForCombat
+
+        public Party GetActiveParty(string username)
         {
-            return (Parties.Where(u => u.ApplicationUser.Id == userId).Count()) > 0;
+            return Parties.Include(p => p.Characters).Where(p => p.ApplicationUser.UserName == username).FirstOrDefault();
         }
+
+        #endregion
+
 
         public void Complete()
         {

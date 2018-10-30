@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Microsoft.EntityFrameworkCore;
 using Attack_And_Defend.Models;
 using Attack_And_Defend.Data;
 
@@ -10,6 +10,7 @@ namespace Attack_And_Defend.Data
 {
     public class PartyRepository
     {
+        ApplicationDbContext applicationContext;
         ITestableContext context;
 
         public PartyRepository()
@@ -20,6 +21,7 @@ namespace Attack_And_Defend.Data
         public PartyRepository(ApplicationDbContext context)
         {
             this.context = context;
+            this.applicationContext = context;
         }
 
         public List<Party> GetPartiesUser(string username)
@@ -40,6 +42,15 @@ namespace Attack_And_Defend.Data
         {
             return context.GetAmountForEveryJob();
         }
+
+        public void ChangeLeadIndexParty(int partyId, int indexNewLeadCharacter)
+        {
+            var party = applicationContext.Parties.Where(p=>p.Id == partyId).First();
+            party.ChangeLeadCharacter(indexNewLeadCharacter);
+            applicationContext.Entry(party).State = EntityState.Modified;
+            context.Complete();
+        }
+
 
         public void Complete()
         {

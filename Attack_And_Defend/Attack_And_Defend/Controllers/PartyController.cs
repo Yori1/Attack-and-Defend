@@ -15,17 +15,23 @@ namespace Attack_And_Defend.Controllers
     public class PartyController : Controller
     {
         UserManager<ApplicationUser> userManager;
+        ApplicationDbContext context;
         PartyRepository repository;
 
         public PartyController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
             this.userManager = userManager;
             this.repository = new PartyRepository(context);
+            this.context = context;
         }
 
         string getCurrentUserUsername()
         {
-            return userManager.GetUserAsync(User).Result.UserName;
+            var user = userManager.GetUserAsync(User).Result;
+            if (user == null)
+                return null;
+            else
+                return user.UserName;
         }
 
         public IActionResult PartyOverview()
@@ -41,15 +47,20 @@ namespace Attack_And_Defend.Controllers
         [HttpPost]
         public JsonResult ChangeLeadCharacter(int partyId, int indexNewLeadCharacter)
         {
-            var party = getUserParty(partyId);
-            party.ChangeLeadCharacter(indexNewLeadCharacter);
+            repository.ChangeLeadIndexParty(partyId, indexNewLeadCharacter);
             repository.Complete();
-            object result = new { success = true };
-            return new JsonResult(result);
+            return new JsonResult(new { success = true });
         }
 
-        Party getUserParty(int partyId)
-        { return repository.GetPartiesUser(getCurrentUserUsername()).Where(p => p.Id == partyId).First(); }
+        [HttpPost]
+        public JsonResult ChangeActiveParty(int partyIndex)
+        {
+            string u = getCurrentUserUsername();
+            context.ChangeActiveParty(partyIndex, getCurrentUserUsername());
+            context.SaveChanges();
+            return new JsonResult(new { success = true });
+        }
+
 
         public IActionResult AddParty(string partyName)
         {
@@ -62,8 +73,6 @@ namespace Attack_And_Defend.Controllers
         {
             return View("Views/Party/CharacterDetail.cshtml", new CharacterDetailsViewModel(partyIdToAddTo));
         }
-
-
 
         [HttpPost]
         public IActionResult SaveCharacter(string name, int attack, int magicDefense, int physicalDefense, int health, JobNumber jobNumber, int partyId)

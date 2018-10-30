@@ -21,13 +21,24 @@ namespace Attack_And_Defend.Models
             Parties = new List<Party>();
         }
 
+        public void ChangeSelectedPartyIndex(int indexToChangeTo)
+        {
+            if (indexToChangeTo > Parties.Count() - 1)
+            { throw new IndexOutOfRangeException(); }
+
+            SelectedPartyIndex = indexToChangeTo;
+        }
+
         public void AddParty(Party party)
         {
             if (party.Characters.Count() == 0)
                 SelectedPartyIndex = 0;
-
-
         }
 
+
+        public Party GetActiveParty()
+        {
+            return Parties.ElementAt(SelectedPartyIndex);
+        }
     }
 }

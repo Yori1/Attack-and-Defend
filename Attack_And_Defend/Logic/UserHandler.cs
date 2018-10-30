@@ -47,13 +47,15 @@ namespace Attack_And_Defend.Logic
             }
         }
 
-        public bool TryCreateUser(string username, string password)
+        public IdentityResult TryCreateUser(string username, string password)
         {
+            if (password == null)
+                password = "";
             ApplicationUser user = new ApplicationUser();
             user.UserName = username;
             var task = userManager.CreateAsync(user, password);
             context.SaveChanges();
-            return task.Result.Succeeded;
+            return task.Result;
         }
 
         bool checkUserExists(string username)
@@ -61,14 +63,14 @@ namespace Attack_And_Defend.Logic
             return context.Users.Any(u => u.UserName == username);
         }
 
-        public async Task<bool> TryLogInUser(string username, string password, ClaimsPrincipal userClaims)
+        public SignInResult TryLogInUser(string username, string password, ClaimsPrincipal userClaims)
         {
             var query = from dbUser in context.ApplicationUsers where dbUser.UserName == username select dbUser;
-            ApplicationUser user = query.ToList()[0];
+            ApplicationUser user = query.FirstOrDefault();
             if (user == null)
-                return false;
-            var task = await signInManager.PasswordSignInAsync(user, password, false, false);
-            return task.Succeeded;
+                return null;
+            var result = signInManager.PasswordSignInAsync(user, password, false, false).Result;
+            return result;
         }
 
         public bool TryLogOut()

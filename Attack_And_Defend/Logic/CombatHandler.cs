@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using Attack_And_Defend.Models;
-using Attack_And_Defend.Data;
 
 namespace Attack_And_Defend.Logic
 {
