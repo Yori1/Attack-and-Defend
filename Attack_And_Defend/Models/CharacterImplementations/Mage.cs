@@ -7,7 +7,7 @@ namespace Attack_And_Defend.Models
 {
     public class Mage : Character
     {
-        public Mage(string name, int attack, int magicDefense, int physicalDefense, int health) : base(name, attack, magicDefense, physicalDefense, health)
+        public Mage(string name, int attack, int magicDefense, int physicalDefense, int maximumHealth) : base(name, attack, magicDefense, physicalDefense, maximumHealth)
         { this.JobNumber = JobNumber.Mage; }
 
         public override void UseUniqueAction(Character target)

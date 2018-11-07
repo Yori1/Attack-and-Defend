@@ -19,8 +19,6 @@ namespace Attack_And_Defend.Models
         [NotMapped]
         public Character ActiveCharacter { get; private set; }
 
-        int CharactersTried = 0;
-
         public Party(string name)
         {
             Name = name;
@@ -49,7 +47,8 @@ namespace Attack_And_Defend.Models
             return true;
         }
 
-        public bool TryRotateActiveCharacter()
+        /*
+        bool findNonFaintedCharacter(ref int charactersTried)
         {
             int indexCurrentlyActiveCharacter = Characters.IndexOf(ActiveCharacter);
             if (indexCurrentlyActiveCharacter == Characters.Count() - 1)
@@ -64,14 +63,14 @@ namespace Attack_And_Defend.Models
 
             if (ActiveCharacter.Fainted)
             {
-                CharactersTried += 1;
-                if (CharactersTried != Characters.Count())
+                charactersTried += 1;
+                if (charactersTried != Characters.Count())
                 {
                     TryRotateActiveCharacter();
                 }
                 else
                 {
-                    CharactersTried = 0;
+                    charactersTried = 0;
                     return false;
                 }
                 return true;
@@ -80,6 +79,14 @@ namespace Attack_And_Defend.Models
             else
                 return true;
 
+        }
+        */
+
+        public bool TryRotateActiveCharacter()
+        {
+            int charactersTried = 0;
+            return true;
+           
         }
 
         public void ChangeLeadCharacter(int index)

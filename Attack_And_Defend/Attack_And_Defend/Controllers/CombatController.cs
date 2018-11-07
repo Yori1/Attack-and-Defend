@@ -8,6 +8,8 @@ using Attack_And_Defend.Logic;
 using Attack_And_Defend.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json;
+
 
 namespace Attack_And_Defend.Controllers
 {
@@ -15,7 +17,6 @@ namespace Attack_And_Defend.Controllers
     {
         ApplicationDbContext context;
         UserManager<ApplicationUser> userManager;
-        CombatHandler combatHandler;
 
         public CombatController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
@@ -28,23 +29,23 @@ namespace Attack_And_Defend.Controllers
             return View();
         }
 
-        public IActionResult Combat()
+        public JsonResult GetCombatHandler()
         {
-            return View();
+            return new JsonResult(getCombatHandlerFromSession());
         }
 
-        public IActionResult Combat(string level)
+        public IActionResult Combat(int level)
         {
-            return View();
+            CombatHandler combatHandler = createNewCombatHandler(level);
+            HttpContext.Session.SetString("combatHandler", JsonConvert.SerializeObject(combatHandler));
+            return View(combatHandler);
         }
-        /*
+        
         CombatHandler getCombatHandlerFromSession()
         {
             string json = HttpContext.Session.GetString("CombatHandler");
-            if (json == null)
-            {
-
-            }
+            CombatHandler combatHandler = JsonConvert.DeserializeObject<CombatHandler>(json);
+            return combatHandler;
         }
 
         CombatHandler createNewCombatHandler(int cpuLevel)
@@ -54,8 +55,9 @@ namespace Attack_And_Defend.Controllers
             Party userParty = context.GetActiveParty(username);
             Party cpuParty = seed.GetCPUPartyByLevel(cpuLevel.ToString());
             var combatHandler = new CombatHandler(userParty, cpuParty);
+            return combatHandler;
         }
-        */
+        
         void saveCombatHandlerInSession(CombatHandler combatHandler)
         {
             

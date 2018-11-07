@@ -19,5 +19,10 @@ namespace Attack_And_Defend.Logic
         {
             return JsonConvert.SerializeObject(party);
         }
+
+        public Party JsonToParty(string json)
+        {
+            return JsonConvert.DeserializeObject<Party>(json);
+        }
     }
 }

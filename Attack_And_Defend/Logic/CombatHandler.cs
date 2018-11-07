@@ -46,9 +46,9 @@ namespace Attack_And_Defend.Logic
         {
             if (party.ActiveCharacter.Fainted)
             {
-                bool opponentOutOfCharacters = party.TryRotateActiveCharacter();
-                if (opponentOutOfCharacters)
-                    PlayerWon = party == PlayerParty;
+                bool partyOutOfCharacters = party.TryRotateActiveCharacter();
+                if (partyOutOfCharacters)
+                    PlayerWon = (party == PlayerParty);
             }
         }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Attack_And_Defend.Models
 {
@@ -9,25 +10,27 @@ namespace Attack_And_Defend.Models
     {
         public int Id { get; private set; }
 
+        [JsonIgnore]
         public Party Party { get; private set; }
         public string Name { get; private set; }
         public int Attack { get; private set; }
         public int MagicDefense { get; private set; }
         public int PhysicalDefense { get; private set; }
-        public int Health { get; private set; }
+        public int MaximumHealth { get; private set; }
+        public int RemainingHealth { get; private set; }
         public bool CanUseSkill { get; private set; } = true;
         public bool AttacksPhysical { get; private set; }
         public JobNumber JobNumber { get; protected set; }
 
         public bool Fainted;
 
-        public Character(string name, int attack, int magicDefense, int physicalDefense, int health)
+        public Character(string name, int attack, int magicDefense, int physicalDefense, int maximumHealth)
         {
             Name = name;
             Attack = attack;
             MagicDefense = magicDefense;
             PhysicalDefense = physicalDefense;
-            Health = health;
+            MaximumHealth = maximumHealth;
         }
 
         public abstract void UseUniqueAction(Character target);
@@ -46,9 +49,9 @@ namespace Attack_And_Defend.Models
             else
                 damageToTake = attackStatAttacker - MagicDefense;
 
-            Health -= damageToTake;
+            MaximumHealth -= damageToTake;
 
-            if (Health < 1)
+            if (MaximumHealth < 1)
             {
                 Fainted = true;
             }

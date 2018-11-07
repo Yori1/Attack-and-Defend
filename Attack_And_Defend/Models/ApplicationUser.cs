@@ -11,6 +11,7 @@ namespace Attack_And_Defend.Models
     [Table("AspNetUsers")]
     public class ApplicationUser: IdentityUser
     {
+        [Newtonsoft.Json.JsonIgnore]
         public ICollection<Party> Parties { get; private set; } = new List<Party>();
         public int SelectedPartyIndex { get; private set; }
 
