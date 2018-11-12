@@ -228,7 +228,10 @@ namespace Attack_And_Defend.Data
 
         public Party GetActiveParty(string username)
         {
-            return Parties.Include(p => p.Characters).Where(p => p.ApplicationUser.UserName == username).FirstOrDefault();
+            ApplicationUser user = ApplicationUsers.Include(u=>u.Parties).Where(u => u.UserName == username).FirstOrDefault();
+            int partyIdActiveParty = user.GetActiveParty().Id;
+            var partiesFromUser = Parties.Include(p => p.Characters).Where(p => p.ApplicationUser.UserName == username);
+            return partiesFromUser.Where(p => p.Id == partyIdActiveParty).FirstOrDefault();
         }
 
         #endregion

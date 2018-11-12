@@ -16,8 +16,15 @@ namespace Attack_And_Defend.Models
         public List<Character> Characters { get; private set; } = new List<Character>();
         public int IndexLeadCharacter { get; private set; }
 
-        [NotMapped]
-        public Character ActiveCharacter { get; private set; }
+        public Character ActiveCharacter
+        {
+            get
+            {
+                if (Characters.Count() == 0)
+                    return null;
+                return Characters[IndexLeadCharacter];
+            }
+        }
 
         public Party(string name)
         {
@@ -86,7 +93,7 @@ namespace Attack_And_Defend.Models
         {
             int charactersTried = 0;
             return true;
-           
+
         }
 
         public void ChangeLeadCharacter(int index)

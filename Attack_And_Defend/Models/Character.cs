@@ -19,7 +19,7 @@ namespace Attack_And_Defend.Models
         public int MaximumHealth { get; private set; }
         public int RemainingHealth { get; private set; }
         public bool CanUseSkill { get; private set; } = true;
-        public bool AttacksPhysical { get; private set; }
+        public bool AttacksPhysical { get; protected set; }
         public JobNumber JobNumber { get; protected set; }
 
         public bool Fainted;
