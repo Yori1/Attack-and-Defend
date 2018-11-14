@@ -59,7 +59,7 @@ namespace Attack_And_Defend.Controllers
 
         public async Task<IActionResult> Login(string UsernameLogin, string PasswordLogin)
         {
-            var result = userHandler.TryLogInUser(UsernameLogin, PasswordLogin, User);
+            var result = userHandler.TryLogInUser(UsernameLogin, PasswordLogin);
             if (result.Succeeded)
                 return RedirectToAction("PartyOverview", "Party");
             else

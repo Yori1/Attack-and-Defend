@@ -17,7 +17,6 @@ namespace Attack_And_Defend_UnitTests
 
         void setupCombatHandler()
         {
-            Party userParty = new Party(null, "UnitTestParty", 0);
         }
     }
 }

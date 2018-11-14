@@ -63,7 +63,7 @@ namespace Attack_And_Defend.Logic
             return context.Users.Any(u => u.UserName == username);
         }
 
-        public SignInResult TryLogInUser(string username, string password, ClaimsPrincipal userClaims)
+        public SignInResult TryLogInUser(string username, string password)
         {
             var query = from dbUser in context.ApplicationUsers where dbUser.UserName == username select dbUser;
             ApplicationUser user = query.FirstOrDefault();
