@@ -24,7 +24,7 @@ namespace Attack_And_Defend.Data
 
             var query = from sampleuser in applicationUsers where sampleuser.UserName == "SampleUser" select sampleuser;
             TestableUser sampleUser = query.First();
-            var party = new Party(null, "Party", null);
+            var party = new Party("Party");
 
             for (int x = 0; x < 5; x++)
                 party.Characters.Add(Character.GetConcreteCharacter("testChar" + (x + 1), 2, 2, 2, 2, JobNumber.Mage));
