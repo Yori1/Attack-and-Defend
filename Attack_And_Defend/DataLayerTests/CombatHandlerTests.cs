@@ -8,15 +8,11 @@ namespace Attack_And_Defend_UnitTests
 {
     class CombatHandlerTests
     {
-        
-
         public CombatHandlerTests()
         {
-            setupCombatHandler();
+
         }
 
-        void setupCombatHandler()
-        {
-        }
+
     }
 }

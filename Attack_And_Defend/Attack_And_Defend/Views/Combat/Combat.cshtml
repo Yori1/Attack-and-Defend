@@ -36,16 +36,16 @@
     <br />
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-6"> 
             <div style="margin-left: 10px;">
                 <p>@Model.PlayerParty.ActiveCharacter.Name</p>
-                <p>Health: 50/80</p>
+                <p>@Model.PlayerParty.ActiveCharacter.RemainingHealth/@Model.PlayerParty.ActiveCharacter.MaximumHealth</p>
             </div>
         </div>
         <div class="col-md-6">
             <div style="margin-left: 10px;">
-                <p>Charactername</p>
-                <p>Health: 50/80</p>
+                <p>@Model.CpuParty.ActiveCharacter.Name</p>
+                <p>Health: @Model.CpuParty.ActiveCharacter.RemainingHealth/@Model.CpuParty.ActiveCharacter.MaximumHealth</p>
             </div>
         </div>
     </div>
@@ -55,7 +55,9 @@
     <br />
     <div class="row">
         <div class="col-md-6 text-center">
-            <button class="combatButton">Attack</button>
+            <form asp-controller="Combat" asp-action="PlayerDecision" asp-route-action="@CharacterAction.Attack">
+                <button type="submit" class="combatButton">Attack</button>
+            </form>
         </div>
         <div class="col-md-6 text-center">
             <button class="combatButton">Skill</button>
