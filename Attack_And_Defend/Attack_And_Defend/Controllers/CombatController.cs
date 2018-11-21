@@ -29,24 +29,25 @@ namespace Attack_And_Defend.Controllers
             return View();
         }
 
-        public JsonResult GetCombatHandler()
-        {
-            return new JsonResult(getCombatHandlerFromSession());
-        }
 
         public IActionResult Combat(int level)
         {
             CombatHandler combatHandler = createNewCombatHandler(level);
-            HttpContext.Session.SetString("combatHandler", JsonConvert.SerializeObject(combatHandler));
+            string json = JsonHandler.ToJson(combatHandler);
+            HttpContext.Session.SetString("CombatHandler", json);
             return View(combatHandler);
         }
         
-        CombatHandler getCombatHandlerFromSession()
+
+        public IActionResult PlayerDecision(CharacterAction action)
         {
             string json = HttpContext.Session.GetString("CombatHandler");
-            CombatHandler combatHandler = JsonConvert.DeserializeObject<CombatHandler>(json);
-            return combatHandler;
+            CombatHandler combatHandler = JsonHandler.FromJson(json);
+            combatHandler.Attack();
+            HttpContext.Session.SetString("CombatHandler", JsonHandler.ToJson(combatHandler));
+            return View("Views/Combat/Combat.cshtml", combatHandler);
         }
+        
 
         CombatHandler createNewCombatHandler(int cpuLevel)
         {
@@ -58,9 +59,5 @@ namespace Attack_And_Defend.Controllers
             return combatHandler;
         }
         
-        void saveCombatHandlerInSession(CombatHandler combatHandler)
-        {
-            
-        }
     }
 }

@@ -13,15 +13,17 @@ namespace Attack_And_Defend.Models
         [JsonIgnore]
         public Party Party { get; private set; }
         public string Name { get; private set; }
+
         public int Attack { get; private set; }
         public int MagicDefense { get; private set; }
         public int PhysicalDefense { get; private set; }
         public int MaximumHealth { get; private set; }
-        public int RemainingHealth { get; private set; }
-        public bool CanUseSkill { get; private set; } = true;
         public bool AttacksPhysical { get; protected set; }
         public JobNumber JobNumber { get; protected set; }
 
+
+        public bool CanUseSkill { get; private set; } = true;
+        public int RemainingHealth { get; private set; }
         public bool Fainted;
 
         public Character(string name, int attack, int magicDefense, int physicalDefense, int maximumHealth)

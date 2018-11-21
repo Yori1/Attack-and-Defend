@@ -48,7 +48,7 @@ namespace Attack_And_Defend.Logic
             {
                 bool partyOutOfCharacters = party.TryRotateActiveCharacter();
                 if (partyOutOfCharacters)
-                    PlayerWon = (party == PlayerParty);
+                    PlayerWon = (party != PlayerParty);
             }
         }
 

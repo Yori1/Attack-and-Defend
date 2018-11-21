@@ -31,9 +31,10 @@ namespace Attack_And_Defend.Models
             Name = name;
         }
 
-        public Party(ApplicationUser user, string name, List<Character> characters, int indexLeadCharacter = 0, int id = 0)
+        [Newtonsoft.Json.JsonConstructor]
+        public Party(ApplicationUser applicationUser, string name, List<Character> characters, int indexLeadCharacter = 0, int id = 0)
         {
-            ApplicationUser = user;
+            ApplicationUser = applicationUser;
             Name = name;
             Characters = characters;
             Id = id;
@@ -54,7 +55,6 @@ namespace Attack_And_Defend.Models
             return true;
         }
 
-        /*
         bool findNonFaintedCharacter(ref int charactersTried)
         {
             int indexCurrentlyActiveCharacter = Characters.IndexOf(ActiveCharacter);
@@ -87,7 +87,6 @@ namespace Attack_And_Defend.Models
                 return true;
 
         }
-        */
 
         public bool TryRotateActiveCharacter()
         {
