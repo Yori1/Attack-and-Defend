@@ -55,7 +55,8 @@ namespace Attack_And_Defend.Controllers
             string username = userManager.GetUserAsync(User).Result.UserName;
             Party userParty = context.GetActiveParty(username);
             Party cpuParty = seed.GetCPUPartyByLevel(cpuLevel.ToString());
-            var combatHandler = new CombatHandler(userParty, cpuParty);
+
+            var combatHandler = new CombatHandler(userParty, cpuParty, username);
             return combatHandler;
         }
         

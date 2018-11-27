@@ -17,7 +17,7 @@ namespace Attack_And_Defend_UnitTests
 
         public CombatHandlerTests()
         {
-            combatHandler = new CombatHandler(makeTestParty("playerParty"), makeTestParty("cpuParty"));
+            combatHandler = new CombatHandler(makeTestParty("playerParty"), makeTestParty("cpuParty"), "username");
 
             cpuparty = combatHandler.CpuParty;
             playerparty = combatHandler.PlayerParty;
@@ -28,7 +28,7 @@ namespace Attack_And_Defend_UnitTests
         [Fact]
         public void InitializingParties()
         {
-            while (combatHandler.CpuParty.ActiveCharacter.RemainingHealth > 0)
+            while (combatHandler.PlayerWon == null)
                 combatHandler.Attack();
         }
 

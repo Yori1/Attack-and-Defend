@@ -17,11 +17,11 @@ namespace Attack_And_Defend.Logic
 
         Random random;
 
-        public CombatHandler(Party playerParty, Party cpuParty, Game game)
+        public CombatHandler(Party playerParty, Party cpuParty, string username)
         {
             this.PlayerParty = playerParty;
             this.CpuParty = cpuParty;
-            this.game = game;
+            this.game = new Game(username);
         }
 
         public void Attack()

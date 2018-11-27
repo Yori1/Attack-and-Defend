@@ -33,7 +33,6 @@ namespace Attack_And_Defend.Models
 
         public void RegisterUsedSkill(Character userSkill, Character target)
         {
-            switch(userSkill.)
         }
 
         public void RegisterWinOrLoss(bool won)
