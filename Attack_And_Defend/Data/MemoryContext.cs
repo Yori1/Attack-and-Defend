@@ -27,7 +27,7 @@ namespace Attack_And_Defend.Data
             var party = new Party(null, "Party", null);
 
             for (int x = 0; x < 5; x++)
-                party.Characters.Add(Character.GetConcreteCharacter("testChar" + (x + 1), 2, 2, 2, 2, JobNumber.Mage));
+                party.TryAddCharacter(Character.GetConcreteCharacter("testChar" + (x + 1), 2, 2, 2, 2, JobNumber.Mage));
 
             sampleUser.Parties.Add(party);
         }
@@ -63,7 +63,7 @@ namespace Attack_And_Defend.Data
 
             var partyToAddToQuery = from party in getAllParties() where party.Id == idPartyToAddTo select party;
             Party partyToAddTo = partyToAddToQuery.First();
-            partyToAddTo.Characters.Add(character);
+            partyToAddTo.TryAddCharacter(character);
             return true;
         }
         public bool TryAddParty(string name, string username)
@@ -98,7 +98,7 @@ namespace Attack_And_Defend.Data
         public Dictionary<JobNumber, int> GetAmountForEveryJob()
         {
             var query = from character in characters
-                        group character by character.JobNumber into jobs
+                        group character by character.GetType() into jobs
                         select new { job = jobs.First().JobNumber, count = jobs.Count() };
             Dictionary<JobNumber, int> jobAndAmount = new Dictionary<JobNumber, int>();
             foreach(var pair in query)

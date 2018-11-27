@@ -7,15 +7,19 @@ namespace Attack_And_Defend.Models
 {
     public class Hunter: Character
     {
-       public Hunter(string name, int attack, int magicDefense, int physicalDefense, int maximumHealth) : base(name, attack, magicDefense, physicalDefense, maximumHealth)
+        public Hunter(string name, int baseAttack, int baseMagicDefense, int basePhysicalDefense, int baseMaximumHealth) : base(name, baseAttack, baseMagicDefense, basePhysicalDefense, baseMaximumHealth)
         {
             this.JobNumber = JobNumber.Hunter;
             this.AttacksPhysical = true;
         }
 
-        public override void UseUniqueAction(Character target)
+       protected override void UseUniqueAction(Character target)
         {
-            throw new NotImplementedException();
+            int damageToTakeTarget = target.MaximumHealth / 4;
+            target.TakeDamage(damageToTakeTarget);
+            Character characterAfterTarget = target.Party.GetNextCharacter();
+            int damageToTakeAfterTarget = characterAfterTarget.MaximumHealth / 2;
+            characterAfterTarget.TakeDamage(damageToTakeAfterTarget);
         }
     }
 }

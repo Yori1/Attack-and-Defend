@@ -7,15 +7,21 @@ namespace Attack_And_Defend.Models
 {
     public class Mage : Character
     {
-        public Mage(string name, int attack, int magicDefense, int physicalDefense, int maximumHealth) : base(name, attack, magicDefense, physicalDefense, maximumHealth)
+        public Mage(string name, int baseAttack, int baseMagicDefense, int basePhysicalDefense, int baseMaximumHealth)
+            : base(name, baseAttack, baseMagicDefense, basePhysicalDefense, baseMaximumHealth)
         {
             this.JobNumber = JobNumber.Mage;
             this.AttacksPhysical = false;
         }
 
-        public override void UseUniqueAction(Character target)
+        protected override void UseUniqueAction(Character target)
         {
-            throw new NotImplementedException();
+            int healthToBringDownTo = (int)(target.MaximumHealth*0.1);
+            if(target.RemainingHealth > healthToBringDownTo)
+            {
+                int damageToTake = target.MaximumHealth - healthToBringDownTo;
+                target.TakeDamage(damageToTake);
+            }
         }
     }
 }

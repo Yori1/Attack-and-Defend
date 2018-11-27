@@ -66,7 +66,7 @@
                 {
                     if (x < party.Characters.Count())
                     {
-                        Character character = party.Characters[x];
+                        Character character = party.Characters.ElementAt(x);
                         <div class="col-md-2">
                             <b>Name: @character.Name</b>
                             <br />Class: @character.JobNumber.ToString()

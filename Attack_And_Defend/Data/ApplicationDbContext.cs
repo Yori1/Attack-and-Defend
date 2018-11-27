@@ -32,6 +32,20 @@ namespace Attack_And_Defend.Data
 
             builder.Entity<Mage>();
 
+            builder.Entity<Character>()
+                .Ignore(c => c.Attack)
+                .Ignore(c => c.AttacksPhysical)
+                .Ignore(c => c.MagicDefense)
+                .Ignore(c => c.MaximumHealth)
+                .Ignore(c => c.PhysicalDefense)
+                .Ignore(c => c.RemainingHealth)
+                .Ignore(c => c.CanUseSkill)
+                .Ignore(c => c.Fainted);
+
+
+            builder.Entity<Party>()
+                .Ignore(p => p.ActiveCharacter);
+
             builder.Entity<ApplicationUser>()
                 .HasMany(a => a.Parties);
 
