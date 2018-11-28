@@ -9,7 +9,7 @@ namespace Attack_And_Defend.Models
     public abstract class Character
     {
         [JsonIgnore]
-        public Party Party { get; private set; }
+        public Party Party { get; set; }
 
         public int Id { get; private set; }
 
@@ -57,7 +57,6 @@ namespace Attack_And_Defend.Models
             assignActualValues();
         }
 
-        //
         protected Character(string name, int baseAttack, int baseMagicDefense, int basePhysicalDefense, int baseMaximumHealth, 
            int experiencePoints, int timesFainted, int charactersDefeated, int matchesWon)
         {
@@ -134,6 +133,8 @@ namespace Attack_And_Defend.Models
         public bool TakeDamage(int damageToTake)
         {
             RemainingHealth -= damageToTake;
+            if (RemainingHealth < 0)
+                RemainingHealth = 0;
 
             if (RemainingHealth < 1)
             {

@@ -27,21 +27,21 @@ namespace Attack_And_Defend.Logic
         public void Attack()
         {
             int damage = getDamageFromPlayerAttack();
-            game.RegisterAttack(PlayerParty.ActiveCharacter.Name, CpuParty.ActiveCharacter.Name, damage);
+            game.RegisterAttack(PlayerParty.GetRotatedInCharacter().Name, CpuParty.GetRotatedInCharacter().Name, damage);
             opponentTurn();
         }
 
         public void UseSkill()
         {
-            PlayerParty.ActiveCharacter.TryUseSkill(CpuParty.ActiveCharacter);
+            PlayerParty.GetRotatedInCharacter().TryUseSkill(CpuParty.GetRotatedInCharacter());
             opponentTurn();
         }
 
         int getDamageFromPlayerAttack()
         {
-            int initialHealth = CpuParty.ActiveCharacter.RemainingHealth;
-            PlayerParty.ActiveCharacter.AttackTarget(CpuParty.ActiveCharacter);
-            return initialHealth - CpuParty.ActiveCharacter.RemainingHealth;
+            int initialHealth = CpuParty.GetRotatedInCharacter().RemainingHealth;
+            PlayerParty.GetRotatedInCharacter().AttackTarget(CpuParty.GetRotatedInCharacter());
+            return initialHealth - CpuParty.GetRotatedInCharacter().RemainingHealth;
         }
 
         void opponentTurn()
@@ -62,7 +62,7 @@ namespace Attack_And_Defend.Logic
 
         void ensurePartyCanContinue(Party party)
         {
-            if (party.ActiveCharacter.Fainted)
+            if (party.GetRotatedInCharacter().Fainted)
             {
                 bool partyHasCharacters = party.TryRotateCharacter();
                 if (!partyHasCharacters)
@@ -79,11 +79,11 @@ namespace Attack_And_Defend.Logic
             switch(decision)
             {
                 case CharacterAction.Attack:
-                    CpuParty.ActiveCharacter.AttackTarget(PlayerParty.ActiveCharacter);
+                    CpuParty.GetRotatedInCharacter().AttackTarget(PlayerParty.GetRotatedInCharacter());
                     break;
 
                 case CharacterAction.Skill:
-                    CpuParty.ActiveCharacter.TryUseSkill(PlayerParty.ActiveCharacter);
+                    CpuParty.GetRotatedInCharacter().TryUseSkill(PlayerParty.GetRotatedInCharacter());
                     break;
             }
         }
@@ -91,7 +91,7 @@ namespace Attack_And_Defend.Logic
         CharacterAction getCpuDecision()
         {
             random = new Random();
-            if (CpuParty.ActiveCharacter.CanUseSkill)
+            if (CpuParty.GetRotatedInCharacter().CanUseSkill)
             {
                 if (random.Next(0, 2) == 1)
                     return CharacterAction.Skill;

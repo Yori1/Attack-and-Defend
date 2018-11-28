@@ -41,19 +41,37 @@ namespace Attack_And_Defend.Controllers
 
         public IActionResult PlayerDecision(CharacterAction action)
         {
-            string json = HttpContext.Session.GetString("CombatHandler");
-            CombatHandler combatHandler = JsonHandler.FromJson(json);
-            combatHandler.Attack();
-            HttpContext.Session.SetString("CombatHandler", JsonHandler.ToJson(combatHandler));
+            string jsonBeforeAction = HttpContext.Session.GetString("modifiedCombatHandler");
+            if(jsonBeforeAction == null)
+                jsonBeforeAction = HttpContext.Session.GetString("CombatHandler");
+            CombatHandler combatHandler = JsonHandler.FromJson(jsonBeforeAction);
+            choosePlayerAction(action, combatHandler);
+            string jsonAfterAction = JsonHandler.ToJson(combatHandler);
+            System.Threading.Thread.Sleep(2000);
+            HttpContext.Session.SetString("modifiedCombatHandler", jsonAfterAction);
             return View("Views/Combat/Combat.cshtml", combatHandler);
         }
         
+        void choosePlayerAction(CharacterAction action, CombatHandler handler)
+        {
+            switch(action)
+            {
+                case CharacterAction.Attack:
+                    handler.Attack();
+                    break;
+
+                case CharacterAction.Skill:
+                    handler.UseSkill();
+                    break;
+            }
+        }
+
 
         CombatHandler createNewCombatHandler(int cpuLevel)
         {
             string username = userManager.GetUserAsync(User).Result.UserName;
             Party userParty = context.GetActiveParty(username);
-            Party cpuParty = context.Parties.Where(p => (p.Name == cpuLevel.ToString()) && p.ApplicationUser == null).FirstOrDefault();
+            Party cpuParty = context.GetCpuParty(cpuLevel.ToString());
 
             var combatHandler = new CombatHandler(userParty, cpuParty, username);
             return combatHandler;

@@ -44,7 +44,7 @@ namespace Attack_And_Defend.Data
                 .HasOne(c => c.Party);
 
             builder.Entity<Party>()
-                .Ignore(p => p.ActiveCharacter);
+                .Ignore(p => p.IndexCharacterRotatedIn);
 
             builder.Entity<ApplicationUser>()
                 .HasMany(a => a.Parties);
@@ -284,6 +284,11 @@ namespace Attack_And_Defend.Data
             int partyIdActiveParty = user.GetActiveParty().Id;
             var partiesFromUser = Parties.Include(p => p.Characters).Where(p => p.ApplicationUser.UserName == username);
             return partiesFromUser.Where(p => p.Id == partyIdActiveParty).FirstOrDefault();
+        }
+
+        public Party GetCpuParty(string cpuLevel)
+        {
+            return Parties.Include(p => p.Characters).Where(p => (p.Name == cpuLevel) && p.ApplicationUser == null).FirstOrDefault();
         }
 
         #endregion

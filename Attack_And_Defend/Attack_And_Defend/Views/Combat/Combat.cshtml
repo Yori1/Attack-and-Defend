@@ -2,6 +2,8 @@
 @using System.Linq;
 @{
     ViewData["Title"] = "Combat";
+    Character playerActiveCharacter = Model.PlayerParty.GetRotatedInCharacter();
+    Character cpuActiveCharacter = Model.CpuParty.GetRotatedInCharacter();
 }
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -36,14 +38,14 @@
     <div class="row">
         <div class="col-md-6"> 
             <div style="margin-left: 10px;">
-                <p>@Model.PlayerParty.ActiveCharacter.Name</p>
-                <p>@Model.PlayerParty.ActiveCharacter.RemainingHealth/@Model.PlayerParty.ActiveCharacter.MaximumHealth</p>
+                <p>@playerActiveCharacter.Name</p>
+                <p>@playerActiveCharacter.RemainingHealth/@playerActiveCharacter.MaximumHealth</p>
             </div>
         </div>
         <div class="col-md-6">
             <div style="margin-left: 10px;">
-                <p>@Model.CpuParty.ActiveCharacter.Name</p>
-                <p>Health: @Model.CpuParty.ActiveCharacter.RemainingHealth/@Model.CpuParty.ActiveCharacter.MaximumHealth</p>
+                <p>@cpuActiveCharacter.Name</p>
+                <p>Health: @cpuActiveCharacter.RemainingHealth/@cpuActiveCharacter.MaximumHealth</p>
             </div>
         </div>
     </div>

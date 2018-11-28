@@ -12,8 +12,6 @@ namespace Attack_And_Defend_UnitTests
         CombatHandler combatHandler;
         Party cpuparty;
         Party playerparty;
-        Character playeractive;
-        Character cpuActive;
 
         public CombatHandlerTests()
         {
@@ -21,15 +19,34 @@ namespace Attack_And_Defend_UnitTests
 
             cpuparty = combatHandler.CpuParty;
             playerparty = combatHandler.PlayerParty;
-            playeractive = combatHandler.PlayerParty.ActiveCharacter;
-            cpuActive = combatHandler.CpuParty.ActiveCharacter;
         }
 
         [Fact]
-        public void InitializingParties()
+        public void RotateCharacterWhenActiveCharacterDefeated()
         {
-            while (combatHandler.PlayerWon == null)
+            Character leadCpuCharacter = cpuparty.GetRotatedInCharacter();
+            Character switchedInPlayerCharacterBeforeDefeat = playerparty.GetRotatedInCharacter();
+            while(switchedInPlayerCharacterBeforeDefeat.RemainingHealth>0)
+            {
                 combatHandler.Attack();
+            }
+            Character switchedInPlayerCharacterAfterDefeat = playerparty.GetRotatedInCharacter();
+
+            Assert.True(switchedInPlayerCharacterBeforeDefeat.Fainted == true);
+            Assert.True(switchedInPlayerCharacterAfterDefeat.Name == "Character#2");
+        }
+
+        [Fact]
+        public void UsingMageSkill()
+        {
+            RotateCharacterWhenActiveCharacterDefeated();
+            Character switchedInCpuCharacter = cpuparty.GetRotatedInCharacter();
+            Character switchedInPlayerCharacter = playerparty.GetRotatedInCharacter();
+
+            Assert.True(switchedInPlayerCharacter is Mage);
+            combatHandler.UseSkill();
+            int targetExpectedHealth = (int)(switchedInCpuCharacter.MaximumHealth * 0.1);
+            Assert.True(switchedInCpuCharacter.RemainingHealth == targetExpectedHealth);
         }
 
         Party makeTestParty(string name)
