@@ -23,28 +23,6 @@ namespace Attack_And_Defend.Logic
             this.userManager = userManager;
             this.context = context;
             this.signInManager = signInManager;
-            SeedSampleUser();
-        }
-
-        public void SeedSampleUser()
-        {
-            string name = "SampleUser";
-            if (!context.Users.Any(u => u.UserName == name))
-            {
-                TryCreateUser(name, "Password1!");
-                context.SaveChanges();
-
-                var query = from sampleuser in context.ApplicationUsers where sampleuser.UserName == "SampleUser" select sampleuser;
-                ApplicationUser sampleUser = query.First();
-                var party = new Party("Party");
-
-                for (int x = 0; x < 5; x++)
-                    party.TryAddCharacter(Character.GetConcreteCharacter("testChar" + (x + 1), 2, 2, 2, 2, JobNumber.Mage));
-
-                sampleUser.Parties.Add(party);
-
-                context.SaveChanges();
-            }
         }
 
         public IdentityResult TryCreateUser(string username, string password)

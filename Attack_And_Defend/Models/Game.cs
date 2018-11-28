@@ -6,6 +6,7 @@ namespace Attack_And_Defend.Models
 {
     public class Game
     {
+        public List<Character> CharactersUsedByPlayer { get; private set; }
         public string UsernameUser { get; private set; }
         public string MessageLog { get; private set; }
 
@@ -37,7 +38,7 @@ namespace Attack_And_Defend.Models
 
         public void RegisterWinOrLoss(bool won)
         {
-            if(won)
+            if (won)
             {
                 MessageLog += UsernameUser + " won the battle." + Environment.NewLine;
             }
@@ -48,5 +49,8 @@ namespace Attack_And_Defend.Models
 
             Won = won;
         }
+
+
+
     }
 }

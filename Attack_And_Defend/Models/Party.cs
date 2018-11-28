@@ -25,6 +25,15 @@ namespace Attack_And_Defend.Models
             updateActiveCharacter(IndexLeadCharacter);
         }
 
+        public Party(int id, string name, List<Character> characters, int indexLeadCharacter)
+        {
+            Id = id;
+            Name = name;
+            this.characters = characters;
+            IndexLeadCharacter = indexLeadCharacter;
+            updateActiveCharacter(IndexLeadCharacter);
+        }
+
         [Newtonsoft.Json.JsonConstructor]
         public Party(ApplicationUser applicationUser, string name, List<Character> characters, int indexLeadCharacter = 0, int id = 0)
         {
@@ -43,13 +52,13 @@ namespace Attack_And_Defend.Models
             {
                 return false;
             }
-            List<Character> characters = (List<Character>)Characters;
+
             characters.Add(character);
+
             if (Characters.Count() == 1)
             {
                 updateActiveCharacter(0);
             }
-            character.SetParty(this);
             return true;
         }
 

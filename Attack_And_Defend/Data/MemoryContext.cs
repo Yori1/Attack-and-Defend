@@ -27,7 +27,7 @@ namespace Attack_And_Defend.Data
             var party = new Party(null, "Party", null);
 
             for (int x = 0; x < 5; x++)
-                party.TryAddCharacter(Character.GetConcreteCharacter("testChar" + (x + 1), 2, 2, 2, 2, JobNumber.Mage));
+                party.TryAddCharacter(new Mage("testChar" + (x + 1), 2, 2, 2, 2, party));
 
             sampleUser.Parties.Add(party);
         }
@@ -51,21 +51,14 @@ namespace Attack_And_Defend.Data
             var list = query.ToList();
         }
 
-        public bool TryAddCharacter(Character character, int idPartyToAddTo)
+        public bool TryAddCharacter(string name, int attack, int magicDefense, int physicalDefense, int health, JobNumber jobNumber, int partyId)
         {
-            var charactersInParty = from party in getAllParties()
-                                    where party.Id == idPartyToAddTo
-                                    join characters in characters on party.Id equals characters.Party.Id
-                                    select characters;
-
-            if (charactersInParty.Count() >= 5)
-                return false;
-
-            var partyToAddToQuery = from party in getAllParties() where party.Id == idPartyToAddTo select party;
-            Party partyToAddTo = partyToAddToQuery.First();
-            partyToAddTo.TryAddCharacter(character);
+            List<Party> parties = getAllParties();
+            Party party = parties.Where(p => p.Id == partyId).FirstOrDefault();
+            party.TryAddCharacter(getImplementation(name, attack, magicDefense, physicalDefense, health, party, jobNumber));
             return true;
         }
+
         public bool TryAddParty(string name, string username)
         {
             string nameToUse = name;
@@ -101,11 +94,28 @@ namespace Attack_And_Defend.Data
                         group character by character.GetType() into jobs
                         select new { job = jobs.First().JobNumber, count = jobs.Count() };
             Dictionary<JobNumber, int> jobAndAmount = new Dictionary<JobNumber, int>();
-            foreach(var pair in query)
+            foreach (var pair in query)
             {
                 jobAndAmount.Add(pair.job, pair.count);
             }
             return jobAndAmount;
+        }
+
+        static Character getImplementation(string name, int baseAttack, int baseMagicDefense, int basePhysicalDefense, int baseMaximumHealth, Party party, JobNumber jobNumber)
+        {
+            Character character = null;
+            switch (jobNumber)
+            {
+                case JobNumber.Hunter:
+                    character = new Hunter(name, baseAttack, baseMagicDefense, basePhysicalDefense, baseMaximumHealth, party);
+                    break;
+
+                case JobNumber.Mage:
+                    character = new Hunter(name, baseAttack, baseMagicDefense, basePhysicalDefense, baseMaximumHealth, party);
+                    break;
+            }
+
+            return character;
         }
     }
 }

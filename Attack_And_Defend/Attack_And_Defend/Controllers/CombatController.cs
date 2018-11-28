@@ -51,10 +51,9 @@ namespace Attack_And_Defend.Controllers
 
         CombatHandler createNewCombatHandler(int cpuLevel)
         {
-            CpuPartiesSeed seed = new CpuPartiesSeed();
             string username = userManager.GetUserAsync(User).Result.UserName;
             Party userParty = context.GetActiveParty(username);
-            Party cpuParty = seed.GetCPUPartyByLevel(cpuLevel.ToString());
+            Party cpuParty = context.Parties.Where(p => (p.Name == cpuLevel.ToString()) && p.ApplicationUser == null).FirstOrDefault();
 
             var combatHandler = new CombatHandler(userParty, cpuParty, username);
             return combatHandler;

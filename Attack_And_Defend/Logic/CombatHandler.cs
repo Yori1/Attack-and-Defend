@@ -54,21 +54,6 @@ namespace Attack_And_Defend.Logic
             }
         }
 
-        void letOpponentChooseMove()
-        {
-            CharacterAction decision = getCpuDecision();
-            switch(decision)
-            {
-                case CharacterAction.Attack:
-                    CpuParty.ActiveCharacter.AttackTarget(PlayerParty.ActiveCharacter);
-                    break;
-
-                case CharacterAction.Skill:
-                    CpuParty.ActiveCharacter.TryUseSkill(PlayerParty.ActiveCharacter);
-                    break;
-            }
-        }
-
         void ensureBothPartiesCanContinue()
         {
             ensurePartyCanContinue(PlayerParty);
@@ -88,6 +73,21 @@ namespace Attack_And_Defend.Logic
             }
         }
 
+        void letOpponentChooseMove()
+        {
+            CharacterAction decision = getCpuDecision();
+            switch(decision)
+            {
+                case CharacterAction.Attack:
+                    CpuParty.ActiveCharacter.AttackTarget(PlayerParty.ActiveCharacter);
+                    break;
+
+                case CharacterAction.Skill:
+                    CpuParty.ActiveCharacter.TryUseSkill(PlayerParty.ActiveCharacter);
+                    break;
+            }
+        }
+
         CharacterAction getCpuDecision()
         {
             random = new Random();
@@ -98,6 +98,7 @@ namespace Attack_And_Defend.Logic
             }
             return CharacterAction.Attack;
         }
+
 
     }
 

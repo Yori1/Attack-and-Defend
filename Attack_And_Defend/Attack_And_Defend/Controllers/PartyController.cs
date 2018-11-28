@@ -77,10 +77,11 @@ namespace Attack_And_Defend.Controllers
         [HttpPost]
         public IActionResult SaveCharacter(string name, int attack, int magicDefense, int physicalDefense, int health, JobNumber jobNumber, int partyId)
         {
-            Character character = Character.GetConcreteCharacter(name, attack, magicDefense, physicalDefense, health, jobNumber);
-            repository.TryAddCharacter(character, partyId);
+            repository.TryAddCharacter(name, attack, magicDefense, physicalDefense, health, jobNumber, partyId);
             repository.Complete();
             return RedirectToAction("PartyOverview");
         }
+
+
     }
 }

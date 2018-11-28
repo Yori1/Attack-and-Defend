@@ -8,9 +8,11 @@ namespace Attack_And_Defend.Models
 {
     public abstract class Character
     {
+        [JsonIgnore]
+        public Party Party { get; private set; }
+
         public int Id { get; private set; }
 
-        public Party Party { get; private set; }
         public string Name { get; private set; }
 
         public int Attack { get; private set; }
@@ -23,6 +25,7 @@ namespace Attack_And_Defend.Models
         public int BasePhysicalDefense { get; private set; }
         public int BaseMaximumHealth { get; private set; }
 
+
         public bool AttacksPhysical { get; protected set; }
         public JobNumber JobNumber { get; protected set; }
 
@@ -31,7 +34,32 @@ namespace Attack_And_Defend.Models
         public bool Fainted { get; private set; }
 
 
-        protected Character(string name, int baseAttack, int baseMagicDefense, int basePhysicalDefense, int baseMaximumHealth)
+        public int ExperiencePoints { get; private set; }
+        public int TimesFainted { get; private set; }
+        public int CharactersDefeated { get; set; }
+        public int MatchesWon { get; private set; }
+
+        const int maxTotalBaseValues = 8;
+
+        protected Character(string name, int baseAttack, int baseMagicDefense, int basePhysicalDefense, int baseMaximumHealth, Party party = null,
+            int experiencePoints = 0, int timesFainted = 0, int charactersDefeated = 0, int matchesWon = 0)
+        {
+            Name = name;
+            BaseAttack = baseAttack;
+            BaseMagicDefense = baseMagicDefense;
+            BasePhysicalDefense = basePhysicalDefense;
+            BaseMaximumHealth = baseMaximumHealth;
+            Party = party;
+
+            this.ExperiencePoints = experiencePoints;
+
+            ensureValidBaseStats(baseAttack, baseMagicDefense, basePhysicalDefense, baseMaximumHealth);
+            assignActualValues();
+        }
+
+        //
+        protected Character(string name, int baseAttack, int baseMagicDefense, int basePhysicalDefense, int baseMaximumHealth, 
+           int experiencePoints, int timesFainted, int charactersDefeated, int matchesWon)
         {
             Name = name;
             BaseAttack = baseAttack;
@@ -39,32 +67,71 @@ namespace Attack_And_Defend.Models
             BasePhysicalDefense = basePhysicalDefense;
             BaseMaximumHealth = baseMaximumHealth;
 
+            this.ExperiencePoints = experiencePoints;
+
+            ensureValidBaseStats(baseAttack, baseMagicDefense, basePhysicalDefense, baseMaximumHealth);
             assignActualValues();
+        }
+
+
+        void ensureValidBaseStats(int baseAttack, int baseMagicDefense, int basePhysicalDefense, int baseMaximumHealth)
+        {
+            if (baseAttack + baseMagicDefense + basePhysicalDefense + baseMaximumHealth > maxTotalBaseValues)
+                throw new ArgumentException("The sum of the base values exceed the limit of " + maxTotalBaseValues + ".");
+        }
+
+        void assignActualValues()
+        {
+            Attack = normalBaseStatToActualStat(BaseAttack);
+            MagicDefense = normalBaseStatToActualStat(BaseMagicDefense);
+            PhysicalDefense = normalBaseStatToActualStat(BasePhysicalDefense);
+            MaximumHealth = 10 + normalBaseStatToActualStat(BaseMaximumHealth) * 5;
+            RemainingHealth = MaximumHealth;
+        }
+
+        int normalBaseStatToActualStat(int baseStat)
+        {
+            int level = GetLevel();
+            int actualStat = (baseStat * level * 10) / maxTotalBaseValues;
+            return actualStat;
         }
 
         protected abstract void UseUniqueAction(Character target);
 
-        public void AttackTarget(Character target)
-        {
-            target.DefendAgainstAttack(Attack, AttacksPhysical);
-        }
-
         public void TryUseSkill(Character target)
         {
-            if(CanUseSkill)
+            if (CanUseSkill)
             {
                 UseUniqueAction(target);
                 CanUseSkill = false;
             }
         }
 
-        public void DefendAgainstAttack(int attackStatAttacker, bool attackerAttacksPhysical)
+        public void AttackTarget(Character target)
         {
-            int damageToTake = calculateDamageToTake(attackStatAttacker, attackerAttacksPhysical);
+            if(!target.Fainted)
+            {
+                target.DefendAgainstAttack(Attack, AttacksPhysical);
+                if (target.Fainted)
+                {
+                    CharactersDefeated++;
+                }
+            }
+        }
+        
+        public int GetLevel()
+        {
+            return (ExperiencePoints + 100) / 100;
+        }
+
+        #region Defending
+        public void DefendAgainstAttack(int attackerAttack, bool attackerAttacksPhysical)
+        {
+            int damageToTake = calculateDamageToTake(attackerAttack, attackerAttacksPhysical);
             TakeDamage(damageToTake);
         }
 
-        public void TakeDamage(int damageToTake)
+        public bool TakeDamage(int damageToTake)
         {
             RemainingHealth -= damageToTake;
 
@@ -72,11 +139,7 @@ namespace Attack_And_Defend.Models
             {
                 Fainted = true;
             }
-        }
-
-        public void SetParty(Party party)
-        {
-            Party = party;
+            return Fainted;
         }
 
         int calculateDamageToTake(int attackStatAttacker, bool attackerAttacksPhysical)
@@ -90,29 +153,8 @@ namespace Attack_And_Defend.Models
             return attackStatAttacker - (defenseValueToBeUsed / 2);
         }
 
-        void assignActualValues()
-        {
-            Attack = BaseAttack * 10;
-            MagicDefense = BaseMagicDefense * 10;
-            PhysicalDefense = BasePhysicalDefense * 10;
-            MaximumHealth = BaseMaximumHealth * 100;
-            RemainingHealth = MaximumHealth;
-        }
+        #endregion
 
-        public static Character GetConcreteCharacter(string name, int attack, int magicDefense, int physicalDefense, int health, JobNumber jobNumber)
-        {
-            switch (jobNumber)
-            {
-                case JobNumber.Hunter:
-                    return new Hunter(name, attack, magicDefense, physicalDefense, health);
-
-                case JobNumber.Mage:
-                    return new Mage(name, attack, magicDefense, physicalDefense, health);
-
-                default:
-                    return null;
-            }
-        }
 
     }
 }

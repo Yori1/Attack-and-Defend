@@ -73,7 +73,7 @@ namespace Attack_And_Defend.Controllers
         {
             bool logoutSuccesful = userHandler.TryLogOut();
             if (logoutSuccesful)
-                return View("Views/Home/NotLoggedIn.cshtml", new LoginViewModel("Views/Home/NotLoggedIn.cshtml"));
+                return View("Views/Home/NotLoggedIn.cshtml", new LoginViewModel(""));
             return Index();
         }
 

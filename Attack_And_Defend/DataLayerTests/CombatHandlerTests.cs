@@ -41,12 +41,12 @@ namespace Attack_And_Defend_UnitTests
 
         void fillCharacterList(Party party)
         {
-            for (int x = 0; x < 5; x++)
+            for (int x = 1; x < 6; x++)
             {
                 if ((double)x / 2 == x / 2)
-                    party.TryAddCharacter(new Mage("Character#" + x, 2, 2, 2, 2));
+                    party.TryAddCharacter(new Mage("Character#" + x, 2, 2, 2, 2, party));
                 else
-                    party.TryAddCharacter(new Hunter("Character#" + x, 2, 2, 2, 2));
+                    party.TryAddCharacter(new Hunter("Character#" + x, 2, 2, 2, 2, party));
             }
         }
 
