@@ -55,7 +55,7 @@
     <br />
     <div class="row">
         <div class="col-md-6 text-center">
-            <form asp-controller="Combat" asp-action="PlayerDecision" asp-route-action="@CharacterAction.Attack">
+            <form asp-controller="Combat" asp-action="PlayerDecision" asp-route-action="@CharacterAction.Attack" asp-route-turnNumber="@Model.TurnNumber">
                 <button type="submit" class="combatButton">Attack</button>
             </form>
         </div>

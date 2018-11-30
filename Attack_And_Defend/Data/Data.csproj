@@ -19,4 +19,9 @@
     <ProjectReference Include="..\Models\Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="SqlQueries\Groupby\" />
+    <Folder Include="SqlQueries\Stored procedures\" />
+  </ItemGroup>
+
 </Project>

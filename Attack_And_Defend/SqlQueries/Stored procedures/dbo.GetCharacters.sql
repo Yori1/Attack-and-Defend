@@ -1,0 +1,1 @@
+﻿create procedure GetCharacters @PartyId int as begin select * from Characters ch where ch.PartyId = @PartyId end

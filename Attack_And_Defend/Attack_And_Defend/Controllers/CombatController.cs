@@ -34,21 +34,18 @@ namespace Attack_And_Defend.Controllers
         {
             CombatHandler combatHandler = createNewCombatHandler(level);
             string json = JsonHandler.ToJson(combatHandler);
-            HttpContext.Session.SetString("CombatHandler", json);
+            HttpContext.Session.SetString("combatHandler0", json);
             return View(combatHandler);
         }
         
 
-        public IActionResult PlayerDecision(CharacterAction action)
+        public IActionResult PlayerDecision(CharacterAction action, int turnNumber)
         {
-            string jsonBeforeAction = HttpContext.Session.GetString("modifiedCombatHandler");
-            if(jsonBeforeAction == null)
-                jsonBeforeAction = HttpContext.Session.GetString("CombatHandler");
+            string jsonBeforeAction = HttpContext.Session.GetString("combatHandler" + turnNumber);
             CombatHandler combatHandler = JsonHandler.FromJson(jsonBeforeAction);
             choosePlayerAction(action, combatHandler);
             string jsonAfterAction = JsonHandler.ToJson(combatHandler);
-            System.Threading.Thread.Sleep(2000);
-            HttpContext.Session.SetString("modifiedCombatHandler", jsonAfterAction);
+            HttpContext.Session.SetString("combatHandler" + (combatHandler.TurnNumber), jsonAfterAction);
             return View("Views/Combat/Combat.cshtml", combatHandler);
         }
         
