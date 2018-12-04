@@ -13,7 +13,7 @@ namespace Attack_And_Defend.Models
 
         public ApplicationUser ApplicationUser { get; private set; }
         public string Name { get; private set; }
-        List<Character> characters = new List<Character>();
+        private List<Character> characters = new List<Character>();
         public IEnumerable<Character> Characters { get { return characters; } }
         public int IndexLeadCharacter { get; private set; }
         public int IndexCharacterRotatedIn { get; private set; }

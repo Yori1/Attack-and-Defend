@@ -47,7 +47,6 @@ namespace Attack_And_Defend.Controllers
             CombatHandler combatHandler = JsonHandler.FromJson(jsonBeforeAction);
             choosePlayerAction(action, combatHandler);
             string jsonAfterAction = JsonHandler.ToJson(combatHandler);
-            System.Threading.Thread.Sleep(2000);
             HttpContext.Session.SetString("modifiedCombatHandler", jsonAfterAction);
             return View("Views/Combat/Combat.cshtml", combatHandler);
         }

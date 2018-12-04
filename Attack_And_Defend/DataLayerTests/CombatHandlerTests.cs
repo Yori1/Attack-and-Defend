@@ -33,7 +33,7 @@ namespace Attack_And_Defend_UnitTests
             Character switchedInPlayerCharacterAfterDefeat = playerparty.GetRotatedInCharacter();
 
             Assert.True(switchedInPlayerCharacterBeforeDefeat.Fainted == true);
-            Assert.True(switchedInPlayerCharacterAfterDefeat.Name == "Character#2");
+            Assert.True(switchedInPlayerCharacterAfterDefeat.Name != switchedInPlayerCharacterBeforeDefeat.Name);
         }
 
         [Fact]

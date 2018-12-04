@@ -9,6 +9,7 @@ namespace Attack_And_Defend.Logic
     {
         public string MessageLog { get { return game.MessageLog; } }
         public bool? PlayerWon { get { return game.Won; } }
+        public int TurnNumber { get; private set; }
 
         public Party PlayerParty;
         public Party CpuParty;
@@ -17,11 +18,12 @@ namespace Attack_And_Defend.Logic
 
         Random random;
 
-        public CombatHandler(Party playerParty, Party cpuParty, string username)
+        public CombatHandler(Party playerParty, Party cpuParty, int turnNumber, string username)
         {
             this.PlayerParty = playerParty;
             this.CpuParty = cpuParty;
             this.game = new Game(username);
+            TurnNumber = turnNumber;
         }
 
         public void Attack()
@@ -29,6 +31,7 @@ namespace Attack_And_Defend.Logic
             int damage = getDamageFromPlayerAttack();
             game.RegisterAttack(PlayerParty.GetRotatedInCharacter().Name, CpuParty.GetRotatedInCharacter().Name, damage);
             opponentTurn();
+            TurnNumber++;
         }
 
         public void UseSkill()
