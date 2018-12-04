@@ -41,6 +41,50 @@ namespace Attack_And_Defend.Models
 
         const int maxTotalBaseValues = 8;
 
+        [JsonConstructor]
+        protected Character(int id, string name, int attack, int magicDefense, int physicalDefense, int maximumHealth, int baseAttack, int baseMagicDefense, int basePhysicalDefense, int baseMaximumHealth, bool attacksPhysical, JobNumber jobNumber, bool canUseSkill, int remainingHealth, bool fainted, int experiencePoints, int timesFainted, int charactersDefeated, int matchesWon)
+        {
+            Id = id;
+            Name = name;
+            Attack = attack;
+            MagicDefense = magicDefense;
+            PhysicalDefense = physicalDefense;
+            MaximumHealth = maximumHealth;
+            BaseAttack = baseAttack;
+            BaseMagicDefense = baseMagicDefense;
+            BasePhysicalDefense = basePhysicalDefense;
+            BaseMaximumHealth = baseMaximumHealth;
+            AttacksPhysical = attacksPhysical;
+            JobNumber = jobNumber;
+            CanUseSkill = canUseSkill;
+            RemainingHealth = remainingHealth;
+            Fainted = fainted;
+            ExperiencePoints = experiencePoints;
+            TimesFainted = timesFainted;
+            CharactersDefeated = charactersDefeated;
+            MatchesWon = matchesWon;
+
+            this.ExperiencePoints = experiencePoints;
+
+            ensureValidBaseStats(baseAttack, baseMagicDefense, basePhysicalDefense, baseMaximumHealth);
+            assignActualValues();
+        }
+
+        protected Character(string name, int baseAttack, int baseMagicDefense, int basePhysicalDefense, int baseMaximumHealth,
+            int experiencePoints = 0, int timesFainted = 0, int charactersDefeated = 0, int matchesWon = 0)
+        {
+            Name = name;
+            BaseAttack = baseAttack;
+            BaseMagicDefense = baseMagicDefense;
+            BasePhysicalDefense = basePhysicalDefense;
+            BaseMaximumHealth = baseMaximumHealth;
+
+            this.ExperiencePoints = experiencePoints;
+
+            ensureValidBaseStats(baseAttack, baseMagicDefense, basePhysicalDefense, baseMaximumHealth);
+            assignActualValues();
+        }
+
         protected Character(string name, int baseAttack, int baseMagicDefense, int basePhysicalDefense, int baseMaximumHealth, Party party = null,
             int experiencePoints = 0, int timesFainted = 0, int charactersDefeated = 0, int matchesWon = 0)
         {
@@ -57,20 +101,7 @@ namespace Attack_And_Defend.Models
             assignActualValues();
         }
 
-        protected Character(string name, int baseAttack, int baseMagicDefense, int basePhysicalDefense, int baseMaximumHealth, 
-           int experiencePoints, int timesFainted, int charactersDefeated, int matchesWon)
-        {
-            Name = name;
-            BaseAttack = baseAttack;
-            BaseMagicDefense = baseMagicDefense;
-            BasePhysicalDefense = basePhysicalDefense;
-            BaseMaximumHealth = baseMaximumHealth;
 
-            this.ExperiencePoints = experiencePoints;
-
-            ensureValidBaseStats(baseAttack, baseMagicDefense, basePhysicalDefense, baseMaximumHealth);
-            assignActualValues();
-        }
 
 
         void ensureValidBaseStats(int baseAttack, int baseMagicDefense, int basePhysicalDefense, int baseMaximumHealth)

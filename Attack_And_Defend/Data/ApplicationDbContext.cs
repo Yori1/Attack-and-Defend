@@ -164,7 +164,8 @@ namespace Attack_And_Defend.Data
             List<string> partyNames = new List<string>();
             List<int> indexesLeadCharacter = new List<int>();
 
-            var command = new SqlCommand("execute GetParties " + username, connection);
+            var command = new SqlCommand("execute GetParties @username", connection);
+            command.Parameters.Add(new SqlParameter("@username", username));
             using (var reader = command.ExecuteReader())
             {
                 while (reader.Read())

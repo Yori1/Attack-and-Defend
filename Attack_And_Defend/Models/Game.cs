@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace Attack_And_Defend.Models
 {
     public class Game
     {
-        public List<Character> CharactersUsedByPlayer { get; private set; }
+        public List<Character> CharactersUsedByPlayer { get; private set; } = new List<Character>();
         public string UsernameUser { get; private set; }
-        public string MessageLog { get; private set; }
+        public string MessageLog { get; private set; } = "";
 
         public bool? Won { get; private set; }
         public int TimesAttacked { get; private set; }
@@ -19,6 +20,19 @@ namespace Attack_And_Defend.Models
         {
             UsernameUser = username;
         }
+
+        [JsonConstructor]
+        public Game(List<Character> charactersUsedByPlayer, string usernameUser, string messageLog, bool? won, int timesAttacked, int timesSkillUsed, int charactersDefeated)
+        {
+            CharactersUsedByPlayer = charactersUsedByPlayer;
+            UsernameUser = usernameUser;
+            MessageLog = messageLog;
+            Won = won;
+            TimesAttacked = timesAttacked;
+            TimesSkillUsed = timesSkillUsed;
+            CharactersDefeated = charactersDefeated;
+        }
+
 
         public void RegisterAttack(string nameAttacker, string nameTarget, int damage)
         {

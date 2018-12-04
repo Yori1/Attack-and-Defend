@@ -2,34 +2,45 @@
 using System.Collections.Generic;
 using System.Text;
 using Attack_And_Defend.Models;
+using Newtonsoft.Json;
 
 namespace Attack_And_Defend.Logic
 {
     public class CombatHandler
     {
-        public string MessageLog { get { return game.MessageLog; } }
-        public bool? PlayerWon { get { return game.Won; } }
+        public string MessageLog { get { return Game.MessageLog; } }
+        public bool? PlayerWon { get { return Game.Won; } }
         public int TurnNumber { get; private set; }
+        public Game Game { get; private set; }
 
         public Party PlayerParty;
         public Party CpuParty;
 
-        Game game;
 
         Random random;
 
-        public CombatHandler(Party playerParty, Party cpuParty, int turnNumber, string username)
+        [JsonConstructor]
+        public CombatHandler(Party playerParty, Party cpuParty, Game game, int turnNumber)
         {
             this.PlayerParty = playerParty;
             this.CpuParty = cpuParty;
-            this.game = new Game(username);
+            this.Game = game;
             TurnNumber = turnNumber;
+        }
+
+        public CombatHandler(Party playerParty, Party cpuParty, string username)
+        {
+            this.PlayerParty = playerParty;
+            this.CpuParty = cpuParty;
+            this.Game = new Game(username);
+            TurnNumber = 0;
         }
 
         public void Attack()
         {
             int damage = getDamageFromPlayerAttack();
-            game.RegisterAttack(PlayerParty.GetRotatedInCharacter().Name, CpuParty.GetRotatedInCharacter().Name, damage);
+            Game.RegisterAttack(PlayerParty.GetRotatedInCharacter().Name, CpuParty.GetRotatedInCharacter().Name, damage);
+            TurnNumber++;
             opponentTurn();
             TurnNumber++;
         }
@@ -71,7 +82,7 @@ namespace Attack_And_Defend.Logic
                 if (!partyHasCharacters)
                 {
                     bool playerWon = (party == CpuParty);
-                    game.RegisterWinOrLoss(playerWon);
+                    Game.RegisterWinOrLoss(playerWon);
                 }
             }
         }

@@ -10,6 +10,12 @@ namespace Attack_And_Defend.Models
     public class Mage : Character
     {
         [JsonConstructor]
+        public Mage(int id, string name, int attack, int magicDefense, int physicalDefense, int maximumHealth, int baseAttack, int baseMagicDefense, int basePhysicalDefense, int baseMaximumHealth, bool attacksPhysical, JobNumber jobNumber, bool canUseSkill, int remainingHealth, bool fainted, int experiencePoints, int timesFainted, int charactersDefeated, int matchesWon) : base(id, name, attack, magicDefense, physicalDefense, maximumHealth, baseAttack, baseMagicDefense, basePhysicalDefense, baseMaximumHealth, attacksPhysical, jobNumber, canUseSkill, remainingHealth, fainted, experiencePoints, timesFainted, charactersDefeated, matchesWon)
+        {
+            this.JobNumber = JobNumber.Hunter;
+            this.AttacksPhysical = true;
+        }
+
         public Mage(string name, int baseAttack, int baseMagicDefense, int basePhysicalDefense, int baseMaximumHealth, Party party, int experiencePoints = 0,
             int timesFainted = 0, int charactersDefeated = 0, int matchesWon = 0)
             : base(name, baseAttack, baseMagicDefense, basePhysicalDefense, baseMaximumHealth, party, experiencePoints, timesFainted, charactersDefeated, matchesWon)
