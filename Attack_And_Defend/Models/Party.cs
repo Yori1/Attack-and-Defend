@@ -13,32 +13,33 @@ namespace Attack_And_Defend.Models
 
         public ApplicationUser ApplicationUser { get; private set; }
         public string Name { get; private set; }
-        public List<Character> Characters { get; private set; } = new List<Character>();
+        private List<Character> characters = new List<Character>();
+        public IEnumerable<Character> Characters { get { return characters; } }
         public int IndexLeadCharacter { get; private set; }
-
-        public Character ActiveCharacter
-        {
-            get
-            {
-                if (Characters.Count() == 0)
-                    return null;
-                return Characters[IndexLeadCharacter];
-            }
-        }
+        public int IndexCharacterRotatedIn { get; private set; }
 
         public Party(string name)
         {
             Name = name;
         }
 
+        public Party(int id, string name, List<Character> characters, int indexLeadCharacter)
+        {
+            Id = id;
+            Name = name;
+            this.characters = characters;
+            IndexLeadCharacter = indexLeadCharacter;
+        }
+
         [Newtonsoft.Json.JsonConstructor]
-        public Party(ApplicationUser applicationUser, string name, List<Character> characters, int indexLeadCharacter = 0, int id = 0)
+        public Party(ApplicationUser applicationUser, string name, List<Character> characters, int indexLeadCharacter = 0, int id = 0, int indexCharacterRotatedIn = 0)
         {
             ApplicationUser = applicationUser;
             Name = name;
-            Characters = characters;
+            this.characters = characters;
             Id = id;
             IndexLeadCharacter = indexLeadCharacter;
+            IndexCharacterRotatedIn = indexCharacterRotatedIn;
         }
 
         public bool TryAddCharacter(Character character)
@@ -47,57 +48,61 @@ namespace Attack_And_Defend.Models
             {
                 return false;
             }
-            Characters.Add(character);
-            if (Characters.Count() == 1)
-            {
-                ChangeLeadCharacter(0);
-            }
+
+            characters.Add(character);
             return true;
-        }
-
-        bool findNonFaintedCharacter(ref int charactersTried)
-        {
-            int indexCurrentlyActiveCharacter = Characters.IndexOf(ActiveCharacter);
-            if (indexCurrentlyActiveCharacter == Characters.Count() - 1)
-            {
-                ActiveCharacter = Characters[0];
-            }
-
-            else
-            {
-                ActiveCharacter = Characters[indexCurrentlyActiveCharacter + 1];
-            }
-
-            if (ActiveCharacter.Fainted)
-            {
-                charactersTried += 1;
-                if (charactersTried != Characters.Count())
-                {
-                    TryRotateActiveCharacter();
-                }
-                else
-                {
-                    charactersTried = 0;
-                    return false;
-                }
-                return true;
-
-            }
-            else
-                return true;
-
-        }
-
-        public bool TryRotateActiveCharacter()
-        {
-            int charactersTried = 0;
-            return true;
-
         }
 
         public void ChangeLeadCharacter(int index)
         {
-            IndexLeadCharacter = index;
+            if (index < characters.Count())
+            {
+                IndexLeadCharacter = index;
+                IndexCharacterRotatedIn = IndexLeadCharacter;
+            }
+        }
+
+        public bool TryRotateCharacter()
+        {
+            bool foundNonFaintedCharacter = false;
+            int indexCharacterChecking = IndexCharacterRotatedIn;
+            for (int attempts = 0; attempts < Characters.Count() && !foundNonFaintedCharacter; attempts++)
+            {
+                indexCharacterChecking = getNextCharacterIndex(IndexCharacterRotatedIn);
+                Character characterChecking = characters.ElementAt(indexCharacterChecking);
+                if (!characterChecking.Fainted)
+                {
+                    foundNonFaintedCharacter = true;
+                    IndexCharacterRotatedIn = indexCharacterChecking;
+                }
+            }
+            return foundNonFaintedCharacter;
+        }
+
+        public Character GetNextCharacter()
+        {
+            int indexNextCharacter = getNextCharacterIndex(IndexCharacterRotatedIn);
+            return characters.ElementAt(indexNextCharacter);
+        }
+
+        public Character GetRotatedInCharacter()
+        {
+            return characters.ElementAt(IndexCharacterRotatedIn);
+        }
+
+        int getNextCharacterIndex(int characterIndex)
+        {
+            int indexNextCharacter;
+            if (!(characterIndex == Characters.Count() - 1))
+            {
+                indexNextCharacter = IndexCharacterRotatedIn + 1;
+            }
+
+            else
+            {
+                indexNextCharacter = 0;
+            }
+            return indexNextCharacter;
         }
     }
 }

@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
+using Attack_And_Defend.Data;
+using Attack_And_Defend.Models;
 
 namespace Attack_And_Defend
 {
@@ -14,7 +18,16 @@ namespace Attack_And_Defend
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            var host = CreateWebHostBuilder(args).Build();
+            using (var scope = host.Services.CreateScope())
+            {
+                var serviceProvider = scope.ServiceProvider;
+                var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
+                var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+                DbInitializer.Seed(context, userManager);
+            }
+
+            host.Run();
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>

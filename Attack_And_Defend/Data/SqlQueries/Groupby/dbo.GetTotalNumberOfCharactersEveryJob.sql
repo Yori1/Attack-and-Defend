@@ -1,0 +1,1 @@
+﻿create procedure GetTotalNumberOfCharactersEveryJob as select JobNumber, count(*) as TotalCharactersWithJob from Characters group by JobNumber

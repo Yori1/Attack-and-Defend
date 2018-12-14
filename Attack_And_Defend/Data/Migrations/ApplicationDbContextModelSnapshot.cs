@@ -25,28 +25,30 @@ namespace Attack_And_Defend.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("Attack");
+                    b.Property<int>("BaseAttack");
 
-                    b.Property<bool>("AttacksPhysical");
+                    b.Property<int>("BaseMagicDefense");
 
-                    b.Property<bool>("CanUseSkill");
+                    b.Property<int>("BaseMaximumHealth");
+
+                    b.Property<int>("BasePhysicalDefense");
+
+                    b.Property<int>("CharactersDefeated");
 
                     b.Property<string>("Discriminator")
                         .IsRequired();
 
+                    b.Property<int>("ExperiencePoints");
+
                     b.Property<int>("JobNumber");
 
-                    b.Property<int>("MagicDefense");
-
-                    b.Property<int>("MaximumHealth");
+                    b.Property<int>("MatchesWon");
 
                     b.Property<string>("Name");
 
                     b.Property<int?>("PartyId");
 
-                    b.Property<int>("PhysicalDefense");
-
-                    b.Property<int>("RemainingHealth");
+                    b.Property<int>("TimesFainted");
 
                     b.HasKey("Id");
 

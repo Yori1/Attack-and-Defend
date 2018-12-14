@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using Attack_And_Defend.Models;
 
 namespace Attack_And_Defend.Logic
 {
@@ -33,7 +34,22 @@ namespace Attack_And_Defend.Logic
                 TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Auto,
                 NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore,
             });
+            fixLoopReferencesCombatHandler(obj);
             return obj;
+        }
+
+        static void fixLoopReferencesCombatHandler(CombatHandler combatHandler)
+        {
+            fixLoopReferencesParty(combatHandler.CpuParty);
+            fixLoopReferencesParty(combatHandler.PlayerParty);
+        }
+
+        static void fixLoopReferencesParty(Party party)
+        {
+            foreach(Character character in party.Characters)
+            {
+                character.Party = party;
+            }
         }
     }
 }

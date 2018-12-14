@@ -21,7 +21,8 @@ namespace Attack_And_Defend.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
-            EnsureCreatedSqlObjects();
+            connection = new SqlConnection(Database.GetDbConnection().ConnectionString);
+            connection.Close();
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -29,20 +30,37 @@ namespace Attack_And_Defend.Data
             base.OnModelCreating(builder);
 
             builder.Entity<Hunter>();
-
             builder.Entity<Mage>();
+
+            builder.Entity<Character>()
+                .Ignore(c => c.Attack)
+                .Ignore(c => c.AttacksPhysical)
+                .Ignore(c => c.MagicDefense)
+                .Ignore(c => c.MaximumHealth)
+                .Ignore(c => c.PhysicalDefense)
+                .Ignore(c => c.RemainingHealth)
+                .Ignore(c => c.CanUseSkill)
+                .Ignore(c => c.Fainted)
+                .HasOne(c => c.Party);
+
+            builder.Entity<Party>()
+                .Ignore(p => p.IndexCharacterRotatedIn);
 
             builder.Entity<ApplicationUser>()
                 .HasMany(a => a.Parties);
 
             builder.Entity<CombatResult>()
                 .HasOne(a => a.User);
+
+            var navigation = builder.Entity<Party>()
+        .Metadata.FindNavigation(nameof(Party.Characters));
+
+            navigation.SetPropertyAccessMode(PropertyAccessMode.Field);
         }
 
         #region EnsureCreationSqlObjects
-        void EnsureCreatedSqlObjects()
+        public void EnsureCreatedSqlObjects()
         {
-            connection = new SqlConnection(Database.GetDbConnection().ConnectionString);
             connection.Open();
             EnsureCreatedRegisteredTrigger();
             EnsureCreatedProcedureAmountOfJobs();
@@ -54,6 +72,7 @@ namespace Attack_And_Defend.Data
 
         void EnsureObjectCreated(string query, string objectname)
         {
+            OpenClosedConnection();
             try
             {
                 new SqlCommand(query, connection).ExecuteNonQuery();
@@ -63,6 +82,11 @@ namespace Attack_And_Defend.Data
             {
                 if (exc.Message != "There is already an object named '" + objectname + "' in the database.")
                     throw exc;
+            }
+
+            finally
+            {
+                connection.Close();
             }
         }
 
@@ -114,7 +138,7 @@ namespace Attack_And_Defend.Data
         #region UsedInPartyOverview
         public Dictionary<JobNumber, int> GetAmountForEveryJob()
         {
-            connection.Open();
+            OpenClosedConnection();
             var command = new SqlCommand("execute GetTotalNumberOfCharactersEveryJob", connection);
             var result = new Dictionary<JobNumber, int>();
             using (var reader = command.ExecuteReader())
@@ -126,19 +150,22 @@ namespace Attack_And_Defend.Data
                     result.Add(job, charactersWithJob);
                 }
             }
+            connection.Close();
             return result;
+
         }
 
         public List<Party> GetPartiesUser(string username)
         {
             List<Party> parties = new List<Party>();
-            connection.Open();
+            OpenClosedConnection();
             List<int> partyIds = new List<int>();
             List<ApplicationUser> users = new List<ApplicationUser>();
             List<string> partyNames = new List<string>();
             List<int> indexesLeadCharacter = new List<int>();
 
-            var command = new SqlCommand("execute GetParties " + username, connection);
+            var command = new SqlCommand("execute GetParties @username", connection);
+            command.Parameters.Add(new SqlParameter("@username", username));
             using (var reader = command.ExecuteReader())
             {
                 while (reader.Read())
@@ -153,34 +180,39 @@ namespace Attack_And_Defend.Data
 
             for (int x = 0; x < partyIds.Count(); x++)
             {
-                List<Character> charactersInParty = getCharacters(partyIds[x]);
-                Party party = new Party(users[x], partyNames[x], charactersInParty, indexesLeadCharacter[x], partyIds[x]);
+                Party party = new Party(users[x], partyNames[x], new List<Character>(), indexesLeadCharacter[x], partyIds[x]);
+                AddCharacters(party);
                 parties.Add(party);
             }
 
+            connection.Close();
             return parties;
         }
 
-        List<Character> getCharacters(int partyId)
+        void AddCharacters(Party party)
         {
-            List<Character> result = new List<Character>();
-            var command = new SqlCommand("execute GetCharacters " + partyId, connection);
+            OpenClosedConnection();
+            var command = new SqlCommand("execute GetCharacters " + party.Id, connection);
             using (var reader = command.ExecuteReader())
             {
                 while (reader.Read())
                 {
                     string name = reader[2].ToString();
                     int attack = int.Parse(reader[3].ToString());
-                    int magicDefense = int.Parse(reader[4].ToString());
+                    int physicalDefense = int.Parse(reader[4].ToString());
                     int health = int.Parse(reader[5].ToString());
-                    int physicalDefense = int.Parse(reader[6].ToString());
-                    JobNumber jobNumber = (JobNumber)int.Parse(reader[10].ToString());
+                    int magicDefense = int.Parse(reader[8].ToString());
+                    int charactersDefeated = int.Parse(reader[9].ToString());
+                    int experiencePoints = int.Parse(reader[10].ToString());
+                    int matchesWon = int.Parse(reader[11].ToString());
+                    int timesFainted = int.Parse(reader[12].ToString());
+                    JobNumber jobNumber = (JobNumber)int.Parse(reader[7].ToString());
 
-                    Character character = Character.GetConcreteCharacter(name, attack, magicDefense, health, physicalDefense, jobNumber);
-                    result.Add(character);
+                    Character character = getImplementation(name, attack, magicDefense, physicalDefense, health, party, jobNumber);
+                    party.TryAddCharacter(character);
                 }
             }
-            return result;
+            connection.Close();
         }
 
         public bool TryAddParty(string name, string username)
@@ -192,17 +224,21 @@ namespace Attack_And_Defend.Data
             if (query.Count() > 0)
                 return false;
             Party partyToAdd = new Party(name);
-            ApplicationUsers.Where(u => u.UserName == username).First().Parties.Add(partyToAdd);
+            ApplicationUser user = ApplicationUsers.Where(u => u.UserName == username).First();
+            user.Parties.Add(partyToAdd);
+            if (user.Parties.Count() == 1)
+                user.ChangeSelectedPartyIndex(0);
             return true;
         }
 
-        public bool TryAddCharacter(Character character, int idPartyToAddTo)
+        public bool TryAddCharacter(string name, int attack, int magicDefense, int physicalDefense, int health, JobNumber jobNumber, int partyId)
         {
-            var partyToAddToQuery = from party in Parties where party.Id == idPartyToAddTo select party;
-            Party partyToAddTo = partyToAddToQuery.First();
-
-
-            return partyToAddTo.TryAddCharacter(character);
+            Party partyToAddTo = Parties.Include(p=>p.Characters).Where(p => p.Id == partyId).FirstOrDefault();
+            Character character = getImplementation(name, attack, magicDefense, physicalDefense, health, partyToAddTo, jobNumber);
+            bool added = partyToAddTo.TryAddCharacter(character);
+            if(added)
+             Entry(partyToAddTo).State = EntityState.Modified;
+            return added;
         }
 
         public void ChangeActiveParty(int partyIndex, string username)
@@ -222,6 +258,23 @@ namespace Attack_And_Defend.Data
             return userId;
         }
 
+        Character getImplementation(string name, int baseAttack, int baseMagicDefense, int basePhysicalDefense, int baseMaximumHealth, Party party, JobNumber jobNumber)
+        {
+            Character character = null;
+            switch (jobNumber)
+            {
+                case JobNumber.Hunter:
+                    character = new Hunter(name, baseAttack, baseMagicDefense, basePhysicalDefense, baseMaximumHealth, party);
+                    break;
+
+                case JobNumber.Mage:
+                    character = new Hunter(name, baseAttack, baseMagicDefense, basePhysicalDefense, baseMaximumHealth, party);
+                    break;
+            }
+
+            return character;
+        }
+
         #endregion
 
         #region UsedForCombat
@@ -234,8 +287,18 @@ namespace Attack_And_Defend.Data
             return partiesFromUser.Where(p => p.Id == partyIdActiveParty).FirstOrDefault();
         }
 
+        public Party GetCpuParty(string cpuLevel)
+        {
+            return Parties.Include(p => p.Characters).Where(p => (p.Name == cpuLevel) && p.ApplicationUser == null).FirstOrDefault();
+        }
+
         #endregion
 
+        void OpenClosedConnection()
+        {
+            if (connection.State == System.Data.ConnectionState.Closed)
+                connection.Open();
+        }
 
         public void Complete()
         {

@@ -1,0 +1,1 @@
+﻿create procedure GetParties @Username nvarchar(200) as begin select * from dbo.Parties p where (select subU.UserName from dbo.AspNetUsers subU where subU.Id = p.ApplicationUserId) = @Username; end

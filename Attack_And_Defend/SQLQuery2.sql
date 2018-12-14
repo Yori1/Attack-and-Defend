@@ -1,1 +1,1 @@
-﻿drop trigger ValidateCharacterData
+﻿drop database [aspnet-AttackDefendLocal]

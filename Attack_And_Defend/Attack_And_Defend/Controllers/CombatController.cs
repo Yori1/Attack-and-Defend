@@ -34,28 +34,43 @@ namespace Attack_And_Defend.Controllers
         {
             CombatHandler combatHandler = createNewCombatHandler(level);
             string json = JsonHandler.ToJson(combatHandler);
-            HttpContext.Session.SetString("CombatHandler", json);
+            HttpContext.Session.SetString("combatHandler0", json);
             return View(combatHandler);
         }
         
 
-        public IActionResult PlayerDecision(CharacterAction action)
+        public IActionResult PlayerDecision(CharacterAction action, int turnNumber)
         {
-            string json = HttpContext.Session.GetString("CombatHandler");
-            CombatHandler combatHandler = JsonHandler.FromJson(json);
-            combatHandler.Attack();
-            HttpContext.Session.SetString("CombatHandler", JsonHandler.ToJson(combatHandler));
+            string jsonBeforeAction = HttpContext.Session.GetString("combatHandler" + turnNumber);
+            CombatHandler combatHandler = JsonHandler.FromJson(jsonBeforeAction);
+            choosePlayerAction(action, combatHandler);
+            string jsonAfterAction = JsonHandler.ToJson(combatHandler);
+            HttpContext.Session.SetString("combatHandler" + (combatHandler.TurnNumber), jsonAfterAction);
             return View("Views/Combat/Combat.cshtml", combatHandler);
         }
         
+        void choosePlayerAction(CharacterAction action, CombatHandler handler)
+        {
+            switch(action)
+            {
+                case CharacterAction.Attack:
+                    handler.Attack();
+                    break;
+
+                case CharacterAction.Skill:
+                    handler.UseSkill();
+                    break;
+            }
+        }
+
 
         CombatHandler createNewCombatHandler(int cpuLevel)
         {
-            CpuPartiesSeed seed = new CpuPartiesSeed();
             string username = userManager.GetUserAsync(User).Result.UserName;
             Party userParty = context.GetActiveParty(username);
-            Party cpuParty = seed.GetCPUPartyByLevel(cpuLevel.ToString());
-            var combatHandler = new CombatHandler(userParty, cpuParty);
+            Party cpuParty = context.GetCpuParty(cpuLevel.ToString());
+
+            var combatHandler = new CombatHandler(userParty, cpuParty, 0, username);
             return combatHandler;
         }
         

@@ -13,7 +13,7 @@ namespace Attack_And_Defend.Data
 
         bool TryAddParty(string name, string username);
 
-        bool TryAddCharacter(Character character, int idPartyToAddTo);
+        bool TryAddCharacter(string name, int attack, int magicDefense, int physicalDefense, int health, JobNumber jobNumber, int partyId);
 
         Dictionary<JobNumber, int> GetAmountForEveryJob();
 
