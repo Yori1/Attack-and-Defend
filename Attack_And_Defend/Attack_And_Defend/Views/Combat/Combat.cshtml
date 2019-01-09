@@ -6,14 +6,13 @@
     Character cpuActiveCharacter = Model.CpuParty.GetRotatedInCharacter();
 }
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-<script>
-    $.ready(function (){});
-</script>
+
+
 
 <div class="informationBlock hasNavBar">
     <h2>Combat</h2>
+    <p>Turn: @Model.TurnNumber</p>
     <div class="row">
         <div class="col-md-6">
             @foreach (Character character in Model.PlayerParty.Characters.Where(c=>!c.Fainted))
@@ -38,19 +37,25 @@
     <div class="row">
         <div class="col-md-6"> 
             <div style="margin-left: 10px;">
-                <p>@playerActiveCharacter.Name</p>
-                <p>@playerActiveCharacter.RemainingHealth/@playerActiveCharacter.MaximumHealth</p>
+                <p>Name: @playerActiveCharacter.Name</p>
+                <p>Health: @playerActiveCharacter.RemainingHealth/@playerActiveCharacter.MaximumHealth</p>
+                <p>Class: @playerActiveCharacter.JobNumber.ToString()</p>
             </div>
         </div>
         <div class="col-md-6">
             <div style="margin-left: 10px;">
-                <p>@cpuActiveCharacter.Name</p>
+                <p>Name: @cpuActiveCharacter.Name</p>
                 <p>Health: @cpuActiveCharacter.RemainingHealth/@cpuActiveCharacter.MaximumHealth</p>
+                <p>Class: @cpuActiveCharacter.JobNumber.ToString()</p>
             </div>
         </div>
     </div>
 
-    <div id="logBox" class="lightPurpleBackground" style="height:60px;" overflow:auto;">
+    <div id="logBox" class="lightPurpleBackground" style="height:280px; overflow-y: scroll;">
+        @foreach(string message in Model.MessageLog)
+        {
+            @message<br/>
+        }
     </div>
     <br />
     <div class="row">
@@ -64,3 +69,8 @@
         </div>
     </div>
 </div>
+
+<script>
+    var messageBody = document.querySelector('#logBox');
+    messageBody.scrollTop = messageBody.scrollHeight - messageBody.clientHeight;
+</script>

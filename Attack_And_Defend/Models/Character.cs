@@ -133,7 +133,10 @@ namespace Attack_And_Defend.Models
             else
                 defenseValueToBeUsed = MagicDefense;
 
-            return attackStatAttacker - (defenseValueToBeUsed / 2);
+            int damageToTake = attackStatAttacker - (defenseValueToBeUsed / 2);
+            if (damageToTake <= 1)
+                damageToTake = 1;
+            return damageToTake;
         }
 
         #endregion

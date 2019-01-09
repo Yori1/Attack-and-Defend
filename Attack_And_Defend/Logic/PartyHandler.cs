@@ -69,7 +69,6 @@ namespace Attack_And_Defend.Logic
             repository.Finish();
         }
 
-
         string getCurrentUserUsername(ClaimsPrincipal principal)
         {
             var user = userManager.GetUserAsync(principal).Result;

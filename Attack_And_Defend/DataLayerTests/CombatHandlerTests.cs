@@ -15,7 +15,7 @@ namespace Attack_And_Defend_UnitTests
 
         public CombatHandlerTests()
         {
-            combatHandler = new CombatHandler(makeTestParty("playerParty"), makeTestParty("cpuParty"),0 , "username");
+            combatHandler = new CombatHandler();
 
             cpuparty = combatHandler.CpuParty;
             playerparty = combatHandler.PlayerParty;

@@ -7,37 +7,50 @@ namespace Attack_And_Defend.Logic
 {
     public class CombatHandler
     {
-        public string MessageLog { get { return game.MessageLog; } }
+        public List<string> MessageLog { get { return game.MessageLog; } }
         public bool? PlayerWon { get { return game.Won; } }
         public int TurnNumber { get; private set; }
 
-        public Party PlayerParty;
-        public Party CpuParty;
+        public Party PlayerParty { get; private set; }
+        public Party CpuParty { get; private set; }
 
         Game game;
 
         Random random;
 
-        public CombatHandler(Party playerParty, Party cpuParty, int turnNumber, string username)
+        public CombatHandler()
         {
+        }
+
+        public void StartNewGame(string username, Party playerParty, Party cpuParty)
+        {
+            game = new Game();
+            game.UsernameUser = username;
             this.PlayerParty = playerParty;
             this.CpuParty = cpuParty;
-            this.game = new Game(username);
-            TurnNumber = turnNumber;
+
+            TurnNumber = 0;
         }
+
 
         public void Attack()
         {
-            int damage = getDamageFromPlayerAttack();
-            game.RegisterAttack(PlayerParty.GetRotatedInCharacter().Name, CpuParty.GetRotatedInCharacter().Name, damage);
-            opponentTurn();
-            TurnNumber++;
+            if(PlayerWon == null)
+            {
+                int damage = getDamageFromPlayerAttack();
+                game.RegisterAttack(PlayerParty.GetRotatedInCharacter().Name, CpuParty.GetRotatedInCharacter().Name, damage);
+                opponentTurn();
+                TurnNumber++;
+            }
         }
 
         public void UseSkill()
         {
-            PlayerParty.GetRotatedInCharacter().TryUseSkill(CpuParty.GetRotatedInCharacter());
-            opponentTurn();
+            if(PlayerWon == null)
+            {
+                PlayerParty.GetRotatedInCharacter().TryUseSkill(CpuParty.GetRotatedInCharacter());
+                opponentTurn();
+            }
         }
 
         int getDamageFromPlayerAttack()
@@ -49,8 +62,9 @@ namespace Attack_And_Defend.Logic
 
         void opponentTurn()
         {
+            Character attackedCpuCharacter = CpuParty.GetRotatedInCharacter();
             ensureBothPartiesCanContinue();
-            if (PlayerWon == null)
+            if (CpuParty.GetRotatedInCharacter() == attackedCpuCharacter)
             {
                 letOpponentChooseMove();
                 ensureBothPartiesCanContinue();
@@ -67,6 +81,7 @@ namespace Attack_And_Defend.Logic
         {
             if (party.GetRotatedInCharacter().Fainted)
             {
+                game.RegisterDefeat(party.GetRotatedInCharacter());
                 bool partyHasCharacters = party.TryRotateCharacter();
                 if (!partyHasCharacters)
                 {
@@ -82,13 +97,23 @@ namespace Attack_And_Defend.Logic
             switch(decision)
             {
                 case CharacterAction.Attack:
-                    CpuParty.GetRotatedInCharacter().AttackTarget(PlayerParty.GetRotatedInCharacter());
+                    handleCpuAttack();
                     break;
 
                 case CharacterAction.Skill:
                     CpuParty.GetRotatedInCharacter().TryUseSkill(PlayerParty.GetRotatedInCharacter());
+                    game.RegisterUsedSkill(CpuParty.GetRotatedInCharacter(), PlayerParty.GetRotatedInCharacter());
                     break;
             }
+
+        }
+
+        void handleCpuAttack()
+        {
+            int initialHealth = PlayerParty.GetRotatedInCharacter().RemainingHealth;
+            CpuParty.GetRotatedInCharacter().AttackTarget(PlayerParty.GetRotatedInCharacter());
+            int damageDone = initialHealth - PlayerParty.GetRotatedInCharacter().RemainingHealth;
+            game.RegisterAttack(CpuParty.GetRotatedInCharacter().Name, PlayerParty.GetRotatedInCharacter().Name, damageDone);
         }
 
         CharacterAction getCpuDecision()

@@ -66,6 +66,8 @@ namespace Attack_And_Defend
             services.AddScoped<Logic.StatisticsHandler>();
             services.AddScoped<PartyApplicationContext>();
             services.AddScoped<UserApplicationContext>();
+            services.AddScoped<Logic.GameDataHandler>();
+            services.AddSingleton<Logic.CombatHandler>();
 
             services.AddIdentity<Models.ApplicationUser, IdentityRole>(options =>
             {

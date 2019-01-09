@@ -68,7 +68,7 @@ namespace Attack_And_Defend.Models
             int indexCharacterChecking = IndexCharacterRotatedIn;
             for (int attempts = 0; attempts < Characters.Count() && !foundNonFaintedCharacter; attempts++)
             {
-                indexCharacterChecking = getNextCharacterIndex(IndexCharacterRotatedIn);
+                indexCharacterChecking = getNextCharacterIndex(indexCharacterChecking);
                 Character characterChecking = characters.ElementAt(indexCharacterChecking);
                 if (!characterChecking.Fainted)
                 {
@@ -104,7 +104,7 @@ namespace Attack_And_Defend.Models
             int indexNextCharacter;
             if (!(characterIndex == Characters.Count() - 1))
             {
-                indexNextCharacter = IndexCharacterRotatedIn + 1;
+                indexNextCharacter = characterIndex + 1;
             }
 
             else

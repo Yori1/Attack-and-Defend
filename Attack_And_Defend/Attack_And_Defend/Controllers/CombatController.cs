@@ -5,23 +5,25 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Attack_And_Defend.Models;
 using Attack_And_Defend.Logic;
-using Attack_And_Defend.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 
 namespace Attack_And_Defend.Controllers
 {
     public class CombatController : Controller
-    {/*
-        EFContext context;
-        UserManager<ApplicationUser> userManager;
+    {
+        CombatHandler combatHandler;
+        GameDataHandler gameDataHandler;
+        UserHandler userHandler;
 
-        public CombatController(UserManager<ApplicationUser> userManager, EFContext context)
+        public CombatController(CombatHandler combatHandler, GameDataHandler gameDataHandler, UserHandler userHandler)
         {
-            this.context = context;
-            this.userManager = userManager;
+            this.combatHandler = combatHandler;
+            this.gameDataHandler = gameDataHandler;
+            this.userHandler = userHandler;
         }
 
         public IActionResult LevelSelect()
@@ -32,22 +34,15 @@ namespace Attack_And_Defend.Controllers
 
         public IActionResult Combat(int level)
         {
-            /CombatHandler combatHandler = createNewCombatHandler(level);
-            string json = JsonHandler.ToJson(combatHandler);
-            HttpContext.Session.SetString("CombatHandler", json);
+            string username = userHandler.GetApplicationUser(User).UserName;
+            gameDataHandler.PrepareCombatHandler(combatHandler, username, level);
             return View(combatHandler);
         }
         
 
         public IActionResult PlayerDecision(CharacterAction action)
         {
-            string jsonBeforeAction = HttpContext.Session.GetString("modifiedCombatHandler");
-            if(jsonBeforeAction == null)
-                jsonBeforeAction = HttpContext.Session.GetString("CombatHandler");
-            CombatHandler combatHandler = JsonHandler.FromJson(jsonBeforeAction);
             choosePlayerAction(action, combatHandler);
-            string jsonAfterAction = JsonHandler.ToJson(combatHandler);
-            HttpContext.Session.SetString("modifiedCombatHandler", jsonAfterAction);
             return View("Views/Combat/Combat.cshtml", combatHandler);
         }
         
@@ -64,17 +59,6 @@ namespace Attack_And_Defend.Controllers
                     break;
             }
         }
-
-
-        CombatHandler createNewCombatHandler(int cpuLevel)
-        {
-            string username = userManager.GetUserAsync(User).Result.UserName;
-            Party userParty = context.GetActiveParty(username);
-            Party cpuParty = context.GetCpuParty(cpuLevel.ToString());
-
-            var combatHandler = new CombatHandler(userParty, cpuParty,0, username);
-            return combatHandler;
-        }
         
-    */}
+    }
 }
