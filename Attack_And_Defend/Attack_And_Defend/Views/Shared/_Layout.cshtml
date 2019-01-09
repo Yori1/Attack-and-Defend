@@ -1,5 +1,5 @@
 ﻿@inject Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> usermanager;
-@inject Attack_And_Defend.Data.ApplicationDbContext context;
+@inject Attack_And_Defend.Data.EFContext context;
 @using Microsoft.EntityFrameworkCore;
 
 @{
@@ -34,11 +34,11 @@
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Attack And Defend</a>
+                <a asp-area="" asp-controller="Account" asp-action="Index" class="navbar-brand">Attack And Defend</a>
             </div>
             <div class="navbar-collapse collapse">
 
-                <form asp-controller="Home" asp-action="Logout" method="post" id="logoutForm" class="navbar-right">
+                <form asp-controller="Account" asp-action="Logout" method="post" id="logoutForm" class="navbar-right">
                     <ul class="nav navbar-nav navbar-right">
                         <li>
                             <div style="color: white" class="navbar-text">

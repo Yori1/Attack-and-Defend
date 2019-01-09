@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Attack_And_Defend.Data.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(EFContext))]
     [Migration("20180914081004_added_party_name")]
     partial class added_party_name
     {

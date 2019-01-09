@@ -8,24 +8,21 @@
 <script>
     $(document).ready(function () {
     });
-
     function ChangePartyIndexLeadCharacter(index, partyId) {
-        $.post('ChangeLeadCharacter', { indexNewLeadCharacter: index, partyId: partyId })
+        $.post('ChangeLeadCharacter', { indexNewLeadCharacter: partyId, partyId: index })
             .done(function (data) {
                 if (data.success == true) {
                     location.reload();
                 }
             })
     }
-
-    function ChangeIndexActiveParty(index) {
-        $.post('ChangeActiveParty', { partyIndex: index })
+    function ChangeIndexActiveParty(partyIndex) {
+        $.post('ChangeActiveParty', { partyIndex: partyIndex })
             .done(function (data) {
                 if (data.success == true)
                     location.reload();
             })
-        }
-
+    }
 </script>
 
 <div class="informationBlock hasNavBar">

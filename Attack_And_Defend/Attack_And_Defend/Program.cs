@@ -22,7 +22,7 @@ namespace Attack_And_Defend
             using (var scope = host.Services.CreateScope())
             {
                 var serviceProvider = scope.ServiceProvider;
-                var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
+                var context = serviceProvider.GetRequiredService<EFContext>();
                 var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
                 DbInitializer.Seed(context, userManager);
             }

@@ -8,8 +8,7 @@ namespace Attack_And_Defend.Models
 {
     public abstract class Character
     {
-        [JsonIgnore]
-        public Party Party { get; set; }
+        public Character NextCharacterInParty { get; set; }
 
         public int Id { get; private set; }
 
@@ -41,7 +40,7 @@ namespace Attack_And_Defend.Models
 
         const int maxTotalBaseValues = 8;
 
-        protected Character(string name, int baseAttack, int baseMagicDefense, int basePhysicalDefense, int baseMaximumHealth, Party party = null,
+        protected Character(string name, int baseAttack, int baseMagicDefense, int basePhysicalDefense, int baseMaximumHealth,
             int experiencePoints = 0, int timesFainted = 0, int charactersDefeated = 0, int matchesWon = 0)
         {
             Name = name;
@@ -49,29 +48,12 @@ namespace Attack_And_Defend.Models
             BaseMagicDefense = baseMagicDefense;
             BasePhysicalDefense = basePhysicalDefense;
             BaseMaximumHealth = baseMaximumHealth;
-            Party = party;
 
             this.ExperiencePoints = experiencePoints;
 
             ensureValidBaseStats(baseAttack, baseMagicDefense, basePhysicalDefense, baseMaximumHealth);
             assignActualValues();
         }
-
-        protected Character(string name, int baseAttack, int baseMagicDefense, int basePhysicalDefense, int baseMaximumHealth, 
-           int experiencePoints, int timesFainted, int charactersDefeated, int matchesWon)
-        {
-            Name = name;
-            BaseAttack = baseAttack;
-            BaseMagicDefense = baseMagicDefense;
-            BasePhysicalDefense = basePhysicalDefense;
-            BaseMaximumHealth = baseMaximumHealth;
-
-            this.ExperiencePoints = experiencePoints;
-
-            ensureValidBaseStats(baseAttack, baseMagicDefense, basePhysicalDefense, baseMaximumHealth);
-            assignActualValues();
-        }
-
 
         void ensureValidBaseStats(int baseAttack, int baseMagicDefense, int basePhysicalDefense, int baseMaximumHealth)
         {
@@ -156,6 +138,21 @@ namespace Attack_And_Defend.Models
 
         #endregion
 
+
+        public static Character GetConcreteCharacter(string name, int attack, int magDef, int physDef, int maxHealth, JobNumber jobNumber)
+        {
+            switch(jobNumber)
+            {
+                case JobNumber.Mage:
+                    return new Mage(name, attack, magDef, physDef, maxHealth);
+
+                case JobNumber.Hunter:
+                    return new Hunter(name, attack, magDef, physDef, maxHealth);
+
+                default:
+                    return null;
+            }
+        }
 
     }
 }

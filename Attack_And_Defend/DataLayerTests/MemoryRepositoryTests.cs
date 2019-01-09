@@ -11,7 +11,7 @@ namespace Attack_And_Defend_UnitTests
 {
     public class MemoryRepositoryTests
     {
-        PartyRepository partyRepository = new PartyRepository();
+        PartyRepository partyRepository = new PartyRepository(new PartyMemoryContext());
 
         [Fact]
         public void CheckSeededParty()

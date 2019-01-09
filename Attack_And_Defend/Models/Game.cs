@@ -34,6 +34,7 @@ namespace Attack_And_Defend.Models
 
         public void RegisterUsedSkill(Character userSkill, Character target)
         {
+            MessageLog += userSkill.Name + " used the " + userSkill.JobNumber.ToString() + " class' unique skill on " + target.Name;
         }
 
         public void RegisterWinOrLoss(bool won)

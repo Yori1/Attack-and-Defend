@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Attack_And_Defend.Data.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(EFContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -46,11 +46,15 @@ namespace Attack_And_Defend.Data.Migrations
 
                     b.Property<string>("Name");
 
+                    b.Property<int?>("NextCharacterInPartyId");
+
                     b.Property<int?>("PartyId");
 
                     b.Property<int>("TimesFainted");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("NextCharacterInPartyId");
 
                     b.HasIndex("PartyId");
 
@@ -77,7 +81,7 @@ namespace Attack_And_Defend.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CombatResults");
+                    b.ToTable("CombatResult");
                 });
 
             modelBuilder.Entity("Attack_And_Defend.Models.Party", b =>
@@ -87,6 +91,8 @@ namespace Attack_And_Defend.Data.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ApplicationUserId");
+
+                    b.Property<int>("IndexCharacterRotatedIn");
 
                     b.Property<int>("IndexLeadCharacter");
 
@@ -298,7 +304,11 @@ namespace Attack_And_Defend.Data.Migrations
 
             modelBuilder.Entity("Attack_And_Defend.Models.Character", b =>
                 {
-                    b.HasOne("Attack_And_Defend.Models.Party", "Party")
+                    b.HasOne("Attack_And_Defend.Models.Character", "NextCharacterInParty")
+                        .WithMany()
+                        .HasForeignKey("NextCharacterInPartyId");
+
+                    b.HasOne("Attack_And_Defend.Models.Party")
                         .WithMany("Characters")
                         .HasForeignKey("PartyId");
                 });

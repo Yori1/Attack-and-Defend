@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Attack_And_Defend.Data.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(EFContext))]
     [Migration("20180917113651_remove extra userid")]
     partial class removeextrauserid
     {

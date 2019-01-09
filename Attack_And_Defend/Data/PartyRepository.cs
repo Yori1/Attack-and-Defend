@@ -10,18 +10,11 @@ namespace Attack_And_Defend.Data
 {
     public class PartyRepository
     {
-        ApplicationDbContext applicationContext;
-        ITestableContext context;
+        IPartyContext context;
 
-        public PartyRepository()
-        {
-            context = new MemoryContext();
-        }
-
-        public PartyRepository(ApplicationDbContext context)
+        public PartyRepository(IPartyContext context)
         {
             this.context = context;
-            this.applicationContext = context;
         }
 
         public List<Party> GetPartiesUser(string username)
@@ -29,11 +22,10 @@ namespace Attack_And_Defend.Data
             return context.GetPartiesUser(username);
         }
 
-        public bool TryAddCharacter(string name, int attack, int magicDefense, int physicalDefense, int health, JobNumber jobNumber, int partyId)
+        public bool TryAddCharacter(Character character, int idPartyToAddTo)
         {
-            return context.TryAddCharacter(name, attack, magicDefense, physicalDefense, health, jobNumber, partyId);
+            return context.TryAddCharacter(character, idPartyToAddTo);
         }
-
         public bool TryAddParty(string name, string username)
         {
             return context.TryAddParty(name, username);
@@ -46,32 +38,18 @@ namespace Attack_And_Defend.Data
 
         public void ChangeLeadIndexParty(int partyId, int indexNewLeadCharacter)
         {
-            var party = applicationContext.Parties.Where(p=>p.Id == partyId).First();
-            party.ChangeLeadCharacter(indexNewLeadCharacter);
-            applicationContext.Entry(party).State = EntityState.Modified;
-            context.Complete();
+            context.ChangeIndexParty(indexNewLeadCharacter, partyId);
         }
 
-        public void Complete()
+        public void ChangeActiveParty(string username, int index)
         {
-            context.Complete();
+            context.ChangeActiveParty(username, index);
         }
 
-        static Character getImplementation(string name, int baseAttack, int baseMagicDefense, int basePhysicalDefense, int baseMaximumHealth, Party party, JobNumber jobNumber)
+
+        public void Finish()
         {
-            Character character = null;
-            switch (jobNumber)
-            {
-                case JobNumber.Hunter:
-                    character = new Hunter(name, baseAttack, baseMagicDefense, basePhysicalDefense, baseMaximumHealth, party);
-                    break;
-
-                case JobNumber.Mage:
-                    character = new Hunter(name, baseAttack, baseMagicDefense, basePhysicalDefense, baseMaximumHealth, party);
-                    break;
-            }
-
-            return character;
+            context.Complete();
         }
     }
 }

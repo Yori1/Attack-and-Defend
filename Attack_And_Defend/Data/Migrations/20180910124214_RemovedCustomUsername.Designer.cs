@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Attack_And_Defend.Data.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(EFContext))]
     [Migration("20180910124214_RemovedCustomUsername")]
     partial class RemovedCustomUsername
     {

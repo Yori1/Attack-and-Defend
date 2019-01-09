@@ -14,58 +14,37 @@ namespace Attack_And_Defend.Controllers
 {
     public class PartyController : Controller
     {
-        UserManager<ApplicationUser> userManager;
-        ApplicationDbContext context;
-        PartyRepository repository;
+        PartyHandler partyHandler;
+        string context;
 
-        public PartyController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
+        public PartyController(PartyHandler partyHandler)
         {
-            this.userManager = userManager;
-            this.repository = new PartyRepository(context);
-            this.context = context;
-        }
-
-        string getCurrentUserUsername()
-        {
-            var user = userManager.GetUserAsync(User).Result;
-            if (user == null)
-                return null;
-            else
-                return user.UserName;
+            this.partyHandler = partyHandler;
         }
 
         public IActionResult PartyOverview()
         {
-            PartyOverviewViewModel vm;
-            List<Party> parties = repository.GetPartiesUser(getCurrentUserUsername());
-            int selectedPartyIndex = userManager.GetUserAsync(User).Result.SelectedPartyIndex;
-            repository.Complete();
-            vm = new PartyOverviewViewModel(selectedPartyIndex, parties);
-            return View(vm);
+            return View(partyHandler.GetPartyOverviewViewModel(User));
         }
 
         [HttpPost]
         public JsonResult ChangeLeadCharacter(int partyId, int indexNewLeadCharacter)
         {
-            repository.ChangeLeadIndexParty(partyId, indexNewLeadCharacter);
-            repository.Complete();
+            partyHandler.ChangeLeadIndexParty(partyId, indexNewLeadCharacter);
             return new JsonResult(new { success = true });
         }
 
         [HttpPost]
         public JsonResult ChangeActiveParty(int partyIndex)
         {
-            string u = getCurrentUserUsername();
-            context.ChangeActiveParty(partyIndex, getCurrentUserUsername());
-            context.SaveChanges();
+            partyHandler.ChangeActiveParty(partyIndex, User);
             return new JsonResult(new { success = true });
         }
 
 
         public IActionResult AddParty(string partyName)
         {
-            repository.TryAddParty(partyName, getCurrentUserUsername());
-            repository.Complete();
+            partyHandler.TryAddParty(partyName, User);
             return RedirectToAction("PartyOverview");
         }
 
@@ -77,11 +56,9 @@ namespace Attack_And_Defend.Controllers
         [HttpPost]
         public IActionResult SaveCharacter(string name, int attack, int magicDefense, int physicalDefense, int health, JobNumber jobNumber, int partyId)
         {
-            repository.TryAddCharacter(name, attack, magicDefense, physicalDefense, health, jobNumber, partyId);
-            repository.Complete();
+            Character character = Character.GetConcreteCharacter(name, attack, magicDefense, physicalDefense, health, jobNumber);
+            partyHandler.TryAddCharacter(character, partyId);
             return RedirectToAction("PartyOverview");
         }
-
-
     }
 }

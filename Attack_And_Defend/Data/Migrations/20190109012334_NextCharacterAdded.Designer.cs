@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Attack_And_Defend.Data.Migrations
 {
     [DbContext(typeof(EFContext))]
-    [Migration("20181029131815_AddInexLeadCharacterToEF")]
-    partial class AddInexLeadCharacterToEF
+    [Migration("20190109012334_NextCharacterAdded")]
+    partial class NextCharacterAdded
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -27,28 +27,36 @@ namespace Attack_And_Defend.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("Attack");
+                    b.Property<int>("BaseAttack");
 
-                    b.Property<bool>("AttacksPhysical");
+                    b.Property<int>("BaseMagicDefense");
 
-                    b.Property<bool>("CanUseSkill");
+                    b.Property<int>("BaseMaximumHealth");
+
+                    b.Property<int>("BasePhysicalDefense");
+
+                    b.Property<int>("CharactersDefeated");
 
                     b.Property<string>("Discriminator")
                         .IsRequired();
 
-                    b.Property<int>("Health");
+                    b.Property<int>("ExperiencePoints");
 
                     b.Property<int>("JobNumber");
 
-                    b.Property<int>("MagicDefense");
+                    b.Property<int>("MatchesWon");
 
                     b.Property<string>("Name");
 
+                    b.Property<int?>("NextCharacterInPartyId");
+
                     b.Property<int?>("PartyId");
 
-                    b.Property<int>("PhysicalDefense");
+                    b.Property<int>("TimesFainted");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("NextCharacterInPartyId");
 
                     b.HasIndex("PartyId");
 
@@ -75,7 +83,7 @@ namespace Attack_And_Defend.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CombatResults");
+                    b.ToTable("CombatResult");
                 });
 
             modelBuilder.Entity("Attack_And_Defend.Models.Party", b =>
@@ -85,6 +93,8 @@ namespace Attack_And_Defend.Data.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ApplicationUserId");
+
+                    b.Property<int>("IndexCharacterRotatedIn");
 
                     b.Property<int>("IndexLeadCharacter");
 
@@ -296,7 +306,11 @@ namespace Attack_And_Defend.Data.Migrations
 
             modelBuilder.Entity("Attack_And_Defend.Models.Character", b =>
                 {
-                    b.HasOne("Attack_And_Defend.Models.Party", "Party")
+                    b.HasOne("Attack_And_Defend.Models.Character", "NextCharacterInParty")
+                        .WithMany()
+                        .HasForeignKey("NextCharacterInPartyId");
+
+                    b.HasOne("Attack_And_Defend.Models.Party")
                         .WithMany("Characters")
                         .HasForeignKey("PartyId");
                 });

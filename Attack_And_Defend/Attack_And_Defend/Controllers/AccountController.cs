@@ -16,20 +16,19 @@ using Microsoft.AspNetCore.Routing;
 
 namespace Attack_And_Defend.Controllers
 {
-    public class HomeController : Controller
+    public class AccountController : Controller
     {
         UserHandler userHandler;
 
-        public HomeController(UserManager<ApplicationUser> userManager, 
-            SignInManager<ApplicationUser> signInManager, Data.ApplicationDbContext context)
+        public AccountController(UserHandler userHandler)
         {
-             userHandler = new UserHandler(userManager, context, signInManager);
+            this.userHandler = userHandler;
         }
 
         public IActionResult Index()
         {
-            if (userHandler.GetSignedInUser(User) == null)
-                return View("Views/Home/NotLoggedIn.cshtml", new LoginViewModel(""));
+            if (userHandler.GetApplicationUser(User) == null)
+                return View("Views/Account/NotLoggedIn.cshtml", new LoginViewModel(""));
             else
                 return RedirectToAction("PartyOverview", "Party");
         }
@@ -42,18 +41,18 @@ namespace Attack_And_Defend.Controllers
             if (PasswordRegister != PasswordConfirm)
             {
                 vm = new LoginViewModel("Passwords are not identical.");
-                return View("Views/Home/NotLoggedIn.cshtml", vm);
+                return View("Views/Account/NotLoggedIn.cshtml", vm);
             }
             var result = userHandler.TryCreateUser(UsernameRegister, PasswordRegister);
             if(result.Succeeded)
             {
-                return RedirectToAction("Login", "Home", new RouteValueDictionary(
+                return RedirectToAction("Login", "Account", new RouteValueDictionary(
                     new { UsernameLogin = UsernameRegister, PasswordLogin = PasswordRegister }) );
             }
             else
             {
                 vm = new LoginViewModel(result.Errors);
-                return View("Views/Home/NotLoggedIn.cshtml", vm);
+                return View("Views/Account/NotLoggedIn.cshtml", vm);
             }
         }
 
@@ -65,7 +64,7 @@ namespace Attack_And_Defend.Controllers
             else
             {
                 LoginViewModel vm = new LoginViewModel("Failed login, make sure you registered using this password.");
-                return View("Views/Home/NotLoggedIn.cshtml", vm);
+                return View("Views/Account/NotLoggedIn.cshtml", vm);
             }
         }
 
@@ -73,7 +72,7 @@ namespace Attack_And_Defend.Controllers
         {
             bool logoutSuccesful = userHandler.TryLogOut();
             if (logoutSuccesful)
-                return View("Views/Home/NotLoggedIn.cshtml", new LoginViewModel(""));
+                return View("Views/Account/NotLoggedIn.cshtml", new LoginViewModel(""));
             return Index();
         }
 

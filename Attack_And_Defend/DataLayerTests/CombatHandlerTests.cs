@@ -15,7 +15,7 @@ namespace Attack_And_Defend_UnitTests
 
         public CombatHandlerTests()
         {
-            combatHandler = new CombatHandler(makeTestParty("playerParty"), makeTestParty("cpuParty"), "username");
+            combatHandler = new CombatHandler(makeTestParty("playerParty"), makeTestParty("cpuParty"),0 , "username");
 
             cpuparty = combatHandler.CpuParty;
             playerparty = combatHandler.PlayerParty;
@@ -61,10 +61,12 @@ namespace Attack_And_Defend_UnitTests
             for (int x = 1; x < 6; x++)
             {
                 if ((double)x / 2 == x / 2)
-                    party.TryAddCharacter(new Mage("Character#" + x, 2, 2, 2, 2, party));
+                    party.TryAddCharacter(new Mage("Character#" + x, 2, 2, 2, 2));
                 else
-                    party.TryAddCharacter(new Hunter("Character#" + x, 2, 2, 2, 2, party));
+                    party.TryAddCharacter(new Hunter("Character#" + x, 2, 2, 2, 2));
             }
+
+            party.SetNextCharacters();
         }
 
 

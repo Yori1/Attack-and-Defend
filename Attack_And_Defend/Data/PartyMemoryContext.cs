@@ -7,12 +7,12 @@ using Attack_And_Defend.Models;
 
 namespace Attack_And_Defend.Data
 {
-    public class MemoryContext : ITestableContext
+    public class PartyMemoryContext : IPartyContext
     {
         List<TestableUser> applicationUsers = new List<TestableUser>();
         List<Character> characters = new List<Character>();
 
-        public MemoryContext()
+        public PartyMemoryContext()
         {
             makeSampleUser();
         }
@@ -24,10 +24,10 @@ namespace Attack_And_Defend.Data
 
             var query = from sampleuser in applicationUsers where sampleuser.UserName == "SampleUser" select sampleuser;
             TestableUser sampleUser = query.First();
-            var party = new Party(null, "Party", null);
+            var party = new Party("Party");
 
             for (int x = 0; x < 5; x++)
-                party.TryAddCharacter(new Mage("testChar" + (x + 1), 2, 2, 2, 2, party));
+                party.TryAddCharacter(Character.GetConcreteCharacter("testChar" + (x + 1), 2, 2, 2, 2, JobNumber.Mage));
 
             sampleUser.Parties.Add(party);
         }
@@ -45,20 +45,23 @@ namespace Attack_And_Defend.Data
             return query.First().Parties;
         }
 
-        void getCharacters(int partyID)
+        List<Character> getCharacters(int partyID)
         {
-            var query = from character in characters where character.Party.Id == partyID select character;
-            var list = query.ToList();
+            var query = from Party party in getAllParties() where party.Id == partyID select party;
+            return query.FirstOrDefault().Characters.ToList();
         }
 
-        public bool TryAddCharacter(string name, int attack, int magicDefense, int physicalDefense, int health, JobNumber jobNumber, int partyId)
+        public bool TryAddCharacter(Character character, int idPartyToAddTo)
         {
-            List<Party> parties = getAllParties();
-            Party party = parties.Where(p => p.Id == partyId).FirstOrDefault();
-            party.TryAddCharacter(getImplementation(name, attack, magicDefense, physicalDefense, health, party, jobNumber));
+
+            if (getCharacters(idPartyToAddTo).Count() >= 5)
+                return false;
+
+            var partyToAddToQuery = from party in getAllParties() where party.Id == idPartyToAddTo select party;
+            Party partyToAddTo = partyToAddToQuery.First();
+            partyToAddTo.TryAddCharacter(character);
             return true;
         }
-
         public bool TryAddParty(string name, string username)
         {
             string nameToUse = name;
@@ -91,31 +94,26 @@ namespace Attack_And_Defend.Data
         public Dictionary<JobNumber, int> GetAmountForEveryJob()
         {
             var query = from character in characters
-                        group character by character.GetType() into jobs
+                        group character by character.JobNumber into jobs
                         select new { job = jobs.First().JobNumber, count = jobs.Count() };
             Dictionary<JobNumber, int> jobAndAmount = new Dictionary<JobNumber, int>();
-            foreach (var pair in query)
+            foreach(var pair in query)
             {
                 jobAndAmount.Add(pair.job, pair.count);
             }
             return jobAndAmount;
         }
 
-        static Character getImplementation(string name, int baseAttack, int baseMagicDefense, int basePhysicalDefense, int baseMaximumHealth, Party party, JobNumber jobNumber)
+        public void ChangeIndexParty(int indexToChange, int partyId)
         {
-            Character character = null;
-            switch (jobNumber)
-            {
-                case JobNumber.Hunter:
-                    character = new Hunter(name, baseAttack, baseMagicDefense, basePhysicalDefense, baseMaximumHealth, party);
-                    break;
+            var party = getAllParties().Where(p => p.Id == partyId).First();
+            if (party != null)
+                party.ChangeLeadCharacter(indexToChange);
+        }
 
-                case JobNumber.Mage:
-                    character = new Hunter(name, baseAttack, baseMagicDefense, basePhysicalDefense, baseMaximumHealth, party);
-                    break;
-            }
-
-            return character;
+        public void ChangeActiveParty(string username, int index)
+        {
+            throw new NotImplementedException();
         }
     }
 }

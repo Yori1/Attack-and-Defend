@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
-
 using Attack_And_Defend.Models;
 using Attack_And_Defend.Data;
 
@@ -14,15 +13,14 @@ namespace Attack_And_Defend.Logic
     public class UserHandler
     {
         UserManager<ApplicationUser> userManager;
-        ApplicationDbContext context;
+        UserRepository repository;
         SignInManager<ApplicationUser> signInManager;
 
-        public UserHandler(UserManager<ApplicationUser> userManager, ApplicationDbContext context,
-            SignInManager<ApplicationUser> signInManager) 
+        public UserHandler(UserApplicationContext userApplicationContext, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager) 
         {
-            this.userManager = userManager;
-            this.context = context;
+            repository = new UserRepository(userApplicationContext);
             this.signInManager = signInManager;
+            this.userManager = userManager;
         }
 
         public IdentityResult TryCreateUser(string username, string password)
@@ -32,18 +30,18 @@ namespace Attack_And_Defend.Logic
             ApplicationUser user = new ApplicationUser();
             user.UserName = username;
             var task = userManager.CreateAsync(user, password);
-            context.SaveChanges();
             return task.Result;
         }
 
-        bool checkUserExists(string username)
+
+        public bool CheckUserExists(string username)
         {
-            return context.Users.Any(u => u.UserName == username);
+            return repository.CheckUserExists(username);
         }
 
         public SignInResult TryLogInUser(string username, string password)
         {
-            var query = from dbUser in context.ApplicationUsers where dbUser.UserName == username select dbUser;
+            var query = from dbUser in repository.GetAllUsers() where dbUser.UserName == username select dbUser;
             ApplicationUser user = query.FirstOrDefault();
             if (user == null)
                 return null;
@@ -59,11 +57,11 @@ namespace Attack_And_Defend.Logic
             return result;
         }
 
-        public ApplicationUser GetSignedInUser(ClaimsPrincipal claims)
+        public ApplicationUser GetApplicationUser(ClaimsPrincipal principal)
         {
-            if (claims == null)
+            if (principal == null)
                 return null;
-            var result = userManager.GetUserAsync(claims).Result;
+            var result = userManager.GetUserAsync(principal).Result;
             return result;
         }
 

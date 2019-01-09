@@ -11,17 +11,16 @@ namespace Attack_And_Defend
 {
     static public class DbInitializer
     {
-        static public void Seed(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        static public void Seed(EFContext context, UserManager<ApplicationUser> userManager)
         {
             EnsureCreationEnemyParties(context);
             EnsureCreationSampleUser(context, userManager);
-            context.EnsureCreatedSqlObjects();
             context.SaveChanges();
         }
 
-        static void EnsureCreationEnemyParties(ApplicationDbContext context)
+        static void EnsureCreationEnemyParties(EFContext context)
         {
-            if(!context.Characters.Any(c=>c.Party.ApplicationUser == null))
+            if(!context.Parties.Any(p=>p.ApplicationUser == null))
             {
                 Party party1 = new Party("1");
                 for (int x = 0; x < 4; x++)
@@ -33,10 +32,10 @@ namespace Attack_And_Defend
 
         static void addLevel1Character(Party partyToAddTo)
         {
-            partyToAddTo.TryAddCharacter(getImplementation("Enemy", 2, 2, 2, 2, partyToAddTo, JobNumber.Hunter));
+            partyToAddTo.TryAddCharacter(Character.GetConcreteCharacter("Enemy", 2, 2, 2, 2, JobNumber.Hunter));
         }
 
-        static void EnsureCreationSampleUser(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        static void EnsureCreationSampleUser(EFContext context, UserManager<ApplicationUser> userManager)
         {
             string name = "SampleUser";
             if (!context.Users.Any(u => u.UserName == name))
@@ -45,7 +44,7 @@ namespace Attack_And_Defend
                 var party = new Party("Party");
 
                 for (int x = 0; x < 5; x++)
-                    party.TryAddCharacter(getImplementation("testChar" + (x + 1), 2, 2, 2, 2, party, JobNumber.Mage));
+                    party.TryAddCharacter(Character.GetConcreteCharacter("testChar" + (x + 1), 2, 2, 2, 2, JobNumber.Mage));
 
                 user.Parties.Add(party);
 
@@ -55,23 +54,8 @@ namespace Attack_And_Defend
             }
         }
 
-        static Character getImplementation(string name, int baseAttack, int baseMagicDefense, int basePhysicalDefense, int baseMaximumHealth, Party party, JobNumber jobNumber)
-        {
-            Character character = null;
-            switch(jobNumber)
-            {
-                case JobNumber.Hunter:
-                    character = new Hunter(name, baseAttack, baseMagicDefense, basePhysicalDefense, baseMaximumHealth, party);
-                    break;
 
-                case JobNumber.Mage:
-                    character = new Hunter(name, baseAttack, baseMagicDefense, basePhysicalDefense, baseMaximumHealth, party);
-                    break;
-            }
-
-            return character;
         }
 
 
     }
-}

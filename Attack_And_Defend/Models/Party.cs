@@ -90,6 +90,15 @@ namespace Attack_And_Defend.Models
             return characters.ElementAt(IndexCharacterRotatedIn);
         }
 
+        public void SetNextCharacters()
+        {
+            for(int x= 0; x<characters.Count(); x++)
+            {
+                Character character = characters.ElementAt(x);
+                character.NextCharacterInParty = characters.ElementAt(getNextCharacterIndex(x));
+            }
+        }
+
         int getNextCharacterIndex(int characterIndex)
         {
             int indexNextCharacter;

@@ -9,21 +9,12 @@ namespace Attack_And_Defend.Models
 {
     public class Mage : Character
     {
-        [JsonConstructor]
-        public Mage(string name, int baseAttack, int baseMagicDefense, int basePhysicalDefense, int baseMaximumHealth, Party party, int experiencePoints = 0,
+        public Mage(string name, int baseAttack, int baseMagicDefense, int basePhysicalDefense, int baseMaximumHealth, int experiencePoints = 0,
             int timesFainted = 0, int charactersDefeated = 0, int matchesWon = 0)
-            : base(name, baseAttack, baseMagicDefense, basePhysicalDefense, baseMaximumHealth, party, experiencePoints, timesFainted, charactersDefeated, matchesWon)
+            : base(name, baseAttack, baseMagicDefense, basePhysicalDefense, baseMaximumHealth, experiencePoints, timesFainted, charactersDefeated, matchesWon)
         {
-            this.JobNumber = JobNumber.Hunter;
-            this.AttacksPhysical = true;
-        }
-
-        public Mage(string name, int baseAttack, int baseMagicDefense, int basePhysicalDefense, int baseMaximumHealth,
-   int experiencePoints, int timesFainted, int charactersDefeated, int matchesWon) : base(name, baseAttack, baseMagicDefense, basePhysicalDefense,
-       baseMaximumHealth, experiencePoints, timesFainted, charactersDefeated, matchesWon)
-        {
-            this.JobNumber = JobNumber.Hunter;
-            this.AttacksPhysical = true;
+            this.JobNumber = JobNumber.Mage;
+            this.AttacksPhysical = false;
         }
 
         protected override void UseUniqueAction(Character target)

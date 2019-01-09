@@ -56,17 +56,24 @@ namespace Attack_And_Defend
             });
 
 
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContext<EFContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString(connectionKeyStringKey)));
-       
+
+
+            services.AddScoped<Logic.UserHandler>();
+            services.AddScoped<Logic.PartyHandler>();
+            services.AddScoped<Logic.StatisticsHandler>();
+            services.AddScoped<PartyApplicationContext>();
+            services.AddScoped<UserApplicationContext>();
+
             services.AddIdentity<Models.ApplicationUser, IdentityRole>(options =>
             {
                 options.User.RequireUniqueEmail = false;
             })
-    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddEntityFrameworkStores<EFContext>()
     .AddDefaultTokenProviders()
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+    .AddEntityFrameworkStores<EFContext>();
 
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
@@ -85,7 +92,7 @@ namespace Attack_And_Defend
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Account/Error");
                 app.UseHsts();
             }
 
@@ -100,7 +107,7 @@ namespace Attack_And_Defend
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Account}/{action=Index}/{id?}");
             });
 
         }

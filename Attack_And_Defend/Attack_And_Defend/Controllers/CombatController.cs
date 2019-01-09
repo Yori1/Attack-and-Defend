@@ -14,11 +14,11 @@ using Newtonsoft.Json;
 namespace Attack_And_Defend.Controllers
 {
     public class CombatController : Controller
-    {
-        ApplicationDbContext context;
+    {/*
+        EFContext context;
         UserManager<ApplicationUser> userManager;
 
-        public CombatController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
+        public CombatController(UserManager<ApplicationUser> userManager, EFContext context)
         {
             this.context = context;
             this.userManager = userManager;
@@ -32,7 +32,7 @@ namespace Attack_And_Defend.Controllers
 
         public IActionResult Combat(int level)
         {
-            CombatHandler combatHandler = createNewCombatHandler(level);
+            /CombatHandler combatHandler = createNewCombatHandler(level);
             string json = JsonHandler.ToJson(combatHandler);
             HttpContext.Session.SetString("CombatHandler", json);
             return View(combatHandler);
@@ -72,9 +72,9 @@ namespace Attack_And_Defend.Controllers
             Party userParty = context.GetActiveParty(username);
             Party cpuParty = context.GetCpuParty(cpuLevel.ToString());
 
-            var combatHandler = new CombatHandler(userParty, cpuParty, username);
+            var combatHandler = new CombatHandler(userParty, cpuParty,0, username);
             return combatHandler;
         }
         
-    }
+    */}
 }
